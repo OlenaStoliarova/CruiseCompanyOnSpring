@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<h2 th:utext="#{ui.cruise.all.title}" class="text-center"></h2>
+
+<div class="container-fluid">
+    <nav th:if="${cruises.totalPages > 0}" aria-label="Page navigation">
+        <ul class="pagination">
+            <li th:each="pageNumber : ${#numbers.sequence( 1, cruises.totalPages)}" th:class="${pageNumber==cruises.number+1} ? 'page-item active' : page-item">
+                <a class="page-link" th:href="@{/tourist/cruises(size=${cruises.size}, page=${pageNumber})}"><span th:text=${pageNumber}></span></a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="table-responsive">
+        <table class="table table-condensed table-bordered table-hover">
+            <thead>
+            <tr class="table-primary">
+                <th th:utext="#{ui.cruise.date}"></th>
+                <th th:utext="#{ui.cruise.route}"></th>
+                <th th:utext="#{ui.cruise.duration}"></th>
+                <th th:utext="#{ui.cruise.ship}"></th>
+                <th th:utext="#{ui.cruise.price}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cruise: ${cruises}">
+                <td th:text="${cruise.startingDate}"></td>
+                <td>
+                    <span th:unless="#{localization.lang}==UKR" th:text="${cruise.routeNameEn}"></span>
+                    <span th:if="#{localization.lang}==UKR" th:text="${cruise.routeNameUkr}"></span>
+                    <div th:insert="common_fragments::route_ports_to_string" th:with="portsList=${cruise.portsList}"></div>
+                </td>
+                <td th:text="${cruise.durationDays}"></td>
+                <td>
+                    <span th:text="${cruise.shipName + '(' + cruise.shipCapacity + ')'}"></span>
+                </td>
+                <td th:text="#{localization.price.multiplier}*${cruise.price}"></td>
+
+                <td>
+                    <a th:href="@{/tourist/order/cruise/{id}(id=${cruise.cruiseId})}" th:text="#{ui.button.order}"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

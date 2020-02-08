@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-danger" th:if="${no_excursion_found}" th:utext="#{ui.error.excursion.not.found}"></h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title" th:utext="#{ui.excursion.edit.invitation}"></h3>
+                </div><br/>
+                <div class="card-body">
+                    <form th:action="@{/travel_agent/edit_excursion}" th:object="${excursion}" method="post">
+                        <input type="hidden" name="id" th:value="${excursion.id}">
+
+                        <div th:replace="travel_agent/excursion_form_fragments::name_plus_descr"></div>
+                        <div th:replace="travel_agent/excursion_form_fragments::duration_price_port"></div>
+
+                        <div class="row">
+                            <div class="col text-right">
+                                <h6 class="text-danger" th:if="${param.error}" th:utext="#{ui.error.not.saved}"></h6>
+                                <h6 class="text-danger" th:if="${param.no_port_found}" th:utext="#{ui.error.not.saved}"></h6>
+                                <h6 class="text-danger" th:if="${param.no_port_found}" th:utext="#{ui.error.excursion.port.not.fond}"></h6>
+                                <a class="btn btn-secondary" href="/travel_agent/excursions"><div th:text="#{ui.button.cancel}"></div></a>
+                                <input type="submit" class="btn btn-success" th:value="#{ui.button.save}" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

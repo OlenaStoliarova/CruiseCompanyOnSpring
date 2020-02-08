@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<h2 th:utext="#{ui.cruise.bonuses}" class="text-center"></h2>
+<div class="container">
+    <div th:utext="#{ui.order.id} + ': ' + ${orderId}" class="font-weight-bold"></div>
+    <div class="font-weight-bold">
+        <span th:utext="#{ui.price.total} + ': '" ></span>
+        <span th:with="total=#{localization.price.multiplier}*${totalPrice}"
+            th:text="${#numbers.formatDecimal(total, 1, 'DEFAULT', 2, 'DEFAULT')}"></span>
+    </div>
+    <br/>
+
+    <form th:action="@{''}" method="post">
+        <fieldset>
+            <div class="form-group form-check" th:each="bonus: ${bonuses}">
+                <input type="checkbox" class="form-check-input" id="chosenBonuses" name="chosenBonuses" th:value="${bonus.id}">
+                <label th:unless="#{localization.lang}==UKR" class="form-check-label" for="chosenBonuses" th:text="${bonus.nameEn}"></label>
+                <label th:if="#{localization.lang}==UKR" class="form-check-label" for="chosenBonuses" th:text="${bonus.nameUkr}"></label>
+            </div>
+        </fieldset>
+        <input type="submit" class="btn btn-success" th:value="#{ui.button.add}" />
+    </form>
+
+    <div class="text-success" th:if="${#lists.isEmpty(bonuses)}">No bonuses found</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<h1 th:utext="#{ui.tourist.hello}"></h1>
+
+<br/>
+<a href="/tourist/my_orders" th:text="#{ui.user.orders.view}"></a>
+<br/><br/>
+<a href="/tourist/cruises" th:text="#{ui.cruises.view}"></a>
+
+</body>
+</html>

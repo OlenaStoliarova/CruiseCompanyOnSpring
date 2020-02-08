@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<h2 th:utext="#{ui.excursion.all.title}" class="text-center"></h2>
+<div class="container-fluid">
+    <div class="row">
+        <span class="col-6">
+            <form class="form-inline" method="get">
+                <span th:utext="#{ui.seaport}"></span>
+                <select th:replace="common_fragments::port_select"></select>
+                <input type="submit" class="btn btn-light" th:value="#{ui.button.filter}" />
+                <a class="btn btn-light" href="/travel_agent/excursions"><div th:text="#{ui.button.clear.filters}"></div></a>
+            </form>
+        </span>
+        <span class="col-6 text-right">
+            <a class="btn btn-success btn-lg" href="/travel_agent/add_excursion"><div th:text="#{ui.button.add}"></div></a>
+        </span>
+    </div>
+
+    <div class="text-success" th:if="${#lists.isEmpty(all_excursions)}" th:utext="#{ui.excursion.all.empty.list}"></div>
+
+    <div class="table-responsive">
+        <table class="table table-condensed table-bordered table-hover">
+            <thead>
+            <tr class="table-primary">
+                <th>id</th>
+                <th th:utext="#{ui.excursion.name.en}"></th>
+                <th th:utext="#{ui.excursion.name.ukr}"></th>
+                <th th:utext="#{ui.excursion.description.en}"></th>
+                <th th:utext="#{ui.excursion.description.ukr}"></th>
+                <th th:utext="#{ui.excursion.duration}"></th>
+                <th th:utext="#{ui.excursion.price}"></th>
+                <th th:utext="#{ui.seaport}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="excursion: ${all_excursions}">
+                <td th:text="${excursion.id}"></td>
+                <td th:text="${excursion.nameEn}"></td>
+                <td th:text="${excursion.nameUkr}"></td>
+                <td th:text="${excursion.descriptionEn}"></td>
+                <td th:text="${excursion.descriptionUkr}"></td>
+                <td th:text="${excursion.approximateDurationHr}"></td>
+                <td th:text="#{localization.price.multiplier}*${excursion.priceUSD}"></td>
+                <td th:if="#{localization.lang}==UKR" th:text="${excursion.seaport.nameUkr + '-' + excursion.seaport.countryUkr}"></td>
+                <td th:unless="#{localization.lang}==UKR" th:text="${excursion.seaport.nameEn + '-' + excursion.seaport.countryEn}"></td>
+                <td>
+                    <form class="form-inline" th:action="@{/travel_agent/edit_excursion}" method="get">
+                        <input type="hidden" name="excursionId" th:value="${excursion.id}"/>
+                        <input type="submit" class="btn btn-light" th:value="#{ui.button.edit}" />
+                    </form>
+                    <form class="form-inline" th:action="@{/travel_agent/delete_excursion}" method="post">
+                        <input type="hidden" name="excursionId" th:value="${excursion.id}"/>
+                        <input type="submit" class="btn btn-light" th:value="#{ui.button.delete}" />
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

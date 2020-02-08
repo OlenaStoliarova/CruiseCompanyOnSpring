@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<h2>Users</h2>
+<div class="container">
+    <h3 class="text-danger" th:if="${error_updating_role}">Error updating user role</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr class="table-primary">
+                <th>id</th>
+                <th>email</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>First name (native)</th>
+                <th>Last name (native)</th>
+                <th>role</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each = "user: ${allUsers}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.firstNameEn}"></td>
+                <td th:text="${user.lastNameEn}"></td>
+                <td th:text="${user.firstNameNative}"></td>
+                <td th:text="${user.lastNameNative}"></td>
+                <td>
+                    <form th:unless="${user.email} == ${current_user}" class="form-inline" th:action="@{/admin/updateUserRole}" th:object="${user}" method="post">
+                        <select class="form-control" id="userRoles" name="userRoles">
+                            <option th:each="role : ${roles}"
+                                    th:value="${role}" th:text="${role}"
+                                    th:selected="${role}==${user.role}"></option>
+                        </select>
+                        <input type="hidden" name="email" th:value="${user.email}">
+                        <input class="btn btn-light" type="submit" value="Update role"/>
+                    </form>
+                    <span th:if="${user.email} == ${current_user}" th:text="${user.role}"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

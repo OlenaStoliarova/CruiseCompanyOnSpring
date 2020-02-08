@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<h2 th:utext="#{ui.cruise.excursions}" class="text-center"></h2>
+<div class="container-fluid">
+    <div class="text-success" th:if="${#lists.isEmpty(excursions)}" th:utext="#{ui.excursion.all.empty.list}"></div>
+
+    <form th:action="@{''}" method="post">
+        <fieldset>
+        <div class="table-responsive">
+            <table class="table table-condensed table-bordered table-hover">
+                <thead>
+                <tr class="table-primary">
+                    <th></th>
+                    <th th:utext="#{ui.excursion.name.en}"></th>
+                    <th th:utext="#{ui.excursion.name.ukr}"></th>
+                    <th th:utext="#{ui.excursion.description.en}"></th>
+                    <th th:utext="#{ui.excursion.description.ukr}"></th>
+                    <th th:utext="#{ui.excursion.duration}"></th>
+                    <th th:utext="#{ui.excursion.price}"></th>
+                    <th th:utext="#{ui.seaport}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="excursion: ${excursions}">
+                    <td>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="chosenExcursions" name="chosenExcursions" th:value="${excursion.id}">
+                        </div>
+                    </td>
+                    <td th:text="${excursion.nameEn}"></td>
+                    <td th:text="${excursion.nameUkr}"></td>
+                    <td th:text="${excursion.descriptionEn}"></td>
+                    <td th:text="${excursion.descriptionUkr}"></td>
+                    <td th:text="${excursion.approximateDurationHr}"></td>
+                    <td th:text="#{localization.price.multiplier}*${excursion.priceUSD}"></td>
+                    <td th:if="#{localization.lang}==UKR" th:text="${excursion.seaport.nameUkr + '-' + excursion.seaport.countryUkr}"></td>
+                    <td th:unless="#{localization.lang}==UKR" th:text="${excursion.seaport.nameEn + '-' + excursion.seaport.countryEn}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        </fieldset>
+        <input type="submit" class="btn btn-success" th:value="#{ui.cruise.add.excursions}" />
+    </form>
+</div>
+
+</body>
+</html>

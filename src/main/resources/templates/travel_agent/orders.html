@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<div class="container-fluid">
+    <div class="table-responsive">
+        <table class="table table-condensed table-bordered table-hover">
+            <thead>
+            <tr class="table-primary">
+                <th th:utext="#{ui.order.id}"></th>
+                <th th:utext="#{ui.order.date}"></th>
+                <th th:utext="#{ui.order.client}"></th>
+                <th th:utext="#{ui.order.details}"></th>
+                <th th:utext="#{ui.cruise.ticket.quantity}"></th>
+                <th th:utext="#{ui.price.total}"></th>
+                <th th:utext="#{ui.order.status}"></th>
+                <th th:utext="#{ui.order.excursions}"></th>
+                <th th:utext="#{ui.order.bonuses}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order: ${orders}">
+                <td th:text="${order.orderId}"></td>
+                <td th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"></td>
+                <td th:text="${order.clientEmail}"></td>
+                <td>
+                    <span th:text="${order.shipName}"></span>
+                    <div class="font-italic" th:text="${'' + order.cruiseStartingDate}"></div>
+                </td>
+                <td th:text="${order.quantity}"></td>
+                <td th:with="total=#{localization.price.multiplier}*${order.totalPrice}"
+                    th:text="${#numbers.formatDecimal(total, 1, 'DEFAULT', 2, 'DEFAULT')}"></td>
+                <td th:insert="common_fragments::order_status_nice"></td>
+                <td>
+                    <span th:if="${order.status.name()=='NEW' OR order.status.name()=='PAID'}" th:utext="#{ui.order.excursions.waiting}"></span>
+                    <span th:if="${order.status.name()=='CANCELED'}" th:utext="#{ui.order.canceled}"></span>
+                    <span th:unless="#{localization.lang}==UKR" th:text="${order.addedExcursionsEn}"></span>
+                    <span th:if="#{localization.lang}==UKR" th:text="${order.addedExcursionsUkr}"></span>
+                </td>
+                <td>
+                    <span th:if="${order.status.name()=='NEW' OR order.status.name()=='PAID'}" th:utext="#{ui.order.excursions.waiting}"></span>
+                    <span th:if="${order.status.name()=='CANCELED'}" th:utext="#{ui.order.canceled}"></span>
+                    <span th:unless="#{localization.lang}==UKR" th:text="${order.freeExtrasEn}"></span>
+                    <span th:if="#{localization.lang}==UKR" th:text="${order.freeExtrasUkr}"></span>
+                    <a th:if="${order.status.name()=='EXCURSIONS_ADDED'}" class="btn btn-success"
+                       th:text="#{ui.button.add}" th:href="@{/travel_agent/order/{id}/add_bonuses(id=${order.orderId})}"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="text-success" th:if="${#lists.isEmpty(orders)}" th:utext="#{ui.orders.list.empty}"></div>
+    </div>
+</div>
+
+
+</body>
+</html>

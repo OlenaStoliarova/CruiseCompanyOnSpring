@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<h2 th:utext="#{ui.cruise.order}" class="text-center"></h2>
+<br/>
+
+<div class="container">
+    <h4 class="font-weight-bold" th:unless="#{localization.lang}==UKR" th:text="${cruise?.routeNameEn}"></h4>
+    <h4 class="font-weight-bold" th:if="#{localization.lang}==UKR" th:text="${cruise?.routeNameUkr}"></h4>
+    <div th:insert="common_fragments::route_ports_to_string" th:with="portsList=${cruise.portsList}"></div>
+    <div class="font-italic font-weight-bold" th:text="${cruise.startingDate + '-' + cruise.finishingDate}"></div>
+    <div th:text="${cruise.shipName}"></div>
+    <br/>
+
+    <h6 class="text-danger" th:if="${param.error}" th:utext="#{ui.cruise.order.error}"></h6>
+
+    <form class="form-inline" th:action="@{/tourist/order/cruise/{id}(id=${cruise.cruiseId})}" method="post">
+        <input type="hidden" name="id" th:value="${cruise.cruiseId}">
+
+        <div class="form-group mr-3">
+            <label for="quantity" th:utext="#{ui.cruise.ticket.quantity}"></label>
+            <input class="form-control" id="quantity" name="quantity" th:required="required"
+                       pattern="\d{1,4}" th:title="#{regex.number.upto4digit.tip}">
+
+        </div>
+        <input type="submit" class="btn btn-success mr-3" th:value="#{ui.button.order}" />
+        <a class="btn btn-secondary" href="/tourist/cruises"><div th:text="#{ui.button.cancel}"></div></a>
+    </form>
+</div>
+
+</body>
+</html>

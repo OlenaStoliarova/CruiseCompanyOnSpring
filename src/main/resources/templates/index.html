@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+
+<br/><br/>
+<div class="container">
+    <h2 th:utext="#{ui.main.greeting}" ></h2>
+    <a class="btn btn-info" href="/main" th:utext="#{ui.login.login}"></a>
+</div>
+
+</body>
+</html>

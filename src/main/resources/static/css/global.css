@@ -1,0 +1,14 @@
+/* #Basic Styles
+================================================== */
+	.langlinks{
+        color: white;
+        text-decoration: none;
+        font-weight: bold;}
+
+    .langsDiv{
+        text-align: center;
+        padding:5px; margin:5px 0px;
+        background:#63BDF2;
+        color:white;
+        font-weight: bold;
+    }

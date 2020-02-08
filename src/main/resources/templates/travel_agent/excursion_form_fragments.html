@@ -1,0 +1,59 @@
+<div th:fragment="name_plus_descr" class="row">
+    <div class="col-6">
+        <div class="form-group">
+            <label th:for="nameEn" th:utext="#{ui.excursion.name.en}"></label>
+            <input class="form-control" th:field="*{nameEn}" th:required="required"
+                   th:pattern="#{regex.name.en}" th:title="#{regex.name.en.tip}"
+                   th:value="${excursion.nameEn}">
+        </div>
+        <div class="form-group">
+            <label th:for="descriptionEn" th:utext="#{ui.excursion.description.en}"></label>
+            <textarea class="form-control" th:field="*{descriptionEn}" th:required="required"
+                      th:utext="${excursion.descriptionEn}" rows="6"></textarea>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <label th:for="nameUkr" th:utext="#{ui.excursion.name.ukr}"></label>
+            <input class="form-control" th:field="*{nameUkr}" th:required="required"
+                   th:pattern="#{regex.name.ukr}" th:title="#{regex.name.ukr.tip}"
+                   th:value="${excursion.nameUkr}">
+        </div>
+        <div class="form-group">
+            <label th:for="descriptionUkr" th:utext="#{ui.excursion.description.ukr}"></label>
+            <textarea class="form-control" th:field="*{descriptionUkr}" th:required="required"
+                      th:utext="${excursion.descriptionUkr}" rows="6"></textarea>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="duration_price_port" class="row">
+    <div class="col-12">
+        <div class="form-group row">
+            <label th:for="approximateDurationHr" th:utext="#{ui.excursion.duration}"
+                   class="col-4 col-form-label"></label>
+            <div class="col-8">
+                <input class="form-control" th:field="*{approximateDurationHr}" th:required="required"
+                       pattern="\d{1,2}" th:title="#{regex.number.upto2digit.tip}"
+                       th:value="${excursion.approximateDurationHr}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label th:for="priceUSD" th:utext="#{ui.excursion.price.usd}"
+                   class="col-4 col-form-label"></label>
+            <div class="col-8">
+                <input class="form-control" th:field="*{priceUSD}" th:required="required"
+                       th:pattern="#{regex.price}" th:title="#{regex.price.tip}"
+                       th:value="${excursion.priceUSD}">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="seaportId" th:utext="#{ui.excursion.port}"
+                   class="col-4 col-form-label"></label>
+            <div class="col-8">
+                <select th:replace="common_fragments::port_select"></select>
+            </div>
+        </div>
+    </div>
+</div>
