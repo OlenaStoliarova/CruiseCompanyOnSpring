@@ -3,14 +3,14 @@
 косметические салоны...).
 
 
-####To get jar:
+#### To get jar:
 
 mvn clean install -DskipTests=true
 
-####To run jar:
+#### To run jar:
 java -Dfile.encoding=UTF-8 -jar CruiseCompanyOnSpring-0.0.1-SNAPSHOT.jar
 
-####Example of killing process
+#### Example of killing process
 C:\>jps
 
     6464 jar
