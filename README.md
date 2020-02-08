@@ -22,6 +22,8 @@
 mvn clean install -DskipTests=true
 
 #### To run jar:
+(from target directory)
+
 java -Dfile.encoding=UTF-8 -jar CruiseCompanyOnSpring-0.0.1-SNAPSHOT.jar
 
 #### Example of killing process
