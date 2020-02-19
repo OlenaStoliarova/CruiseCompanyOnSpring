@@ -5,9 +5,11 @@
 <div th:replace="header::lang_choice"></div>
 <div th:replace="header::top_menu"></div>
 
-<a href="/admin/users">View all users / update user role</a>
+<h2 th:text="#{ui.admin.hello}"></h2>
 <br/>
-<a href="/admin/seaports">View all seaports</a>
+<a href="/admin/users" th:text="#{ui.admin.userslist.view}"></a>
+<br/>
+<a href="/admin/seaports" th:text="#{ui.ports.view}"></a>
 
 </body>
 </html>

@@ -5,20 +5,20 @@
 <div th:replace="header::lang_choice"></div>
 <div th:replace="header::top_menu"></div>
 
-<h2>Users</h2>
-<div class="container">
+<h2 th:text="#{ui.users.title}"></h2>
+<div class="container-fluid">
     <h3 class="text-danger" th:if="${error_updating_role}">Error updating user role</h3>
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead>
             <tr class="table-primary">
                 <th>id</th>
-                <th>email</th>
-                <th>First name</th>
-                <th>Last name</th>
-                <th>First name (native)</th>
-                <th>Last name (native)</th>
-                <th>role</th>
+                <th th:text="#{ui.users.email}"></th>
+                <th th:text="#{ui.users.first.name.en}"></th>
+                <th th:text="#{ui.users.lastname.en}"></th>
+                <th th:text="#{ui.users.first.name.native}"></th>
+                <th th:text="#{ui.users.lastname.native}"></th>
+                <th th:text="#{ui.users.role}"></th>
             </tr>
             </thead>
             <tbody>
@@ -37,7 +37,7 @@
                                     th:selected="${role}==${user.role}"></option>
                         </select>
                         <input type="hidden" name="email" th:value="${user.email}">
-                        <input class="btn btn-light" type="submit" value="Update role"/>
+                        <input class="btn btn-light" type="submit"  th:value="#{ui.users.update.role}"/>
                     </form>
                     <span th:if="${user.email} == ${current_user}" th:text="${user.role}"></span>
                 </td>
