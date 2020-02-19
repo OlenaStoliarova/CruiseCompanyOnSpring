@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ua.cruise.company.entity.Seaport;
 import ua.cruise.company.entity.Ship;
 import ua.cruise.company.service.ExtraService;
-import ua.cruise.company.service.NoEntityFoundException;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.SeaportService;
 import ua.cruise.company.service.ShipService;
 import ua.cruise.company.entity.Extra;

@@ -7,7 +7,7 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.cruise.company.entity.User;
-import ua.cruise.company.service.NoEntityFoundException;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.TouristOrdersService;
 
 import java.util.ArrayList;

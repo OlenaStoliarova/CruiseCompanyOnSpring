@@ -11,6 +11,7 @@ import ua.cruise.company.entity.OrderStatus;
 import ua.cruise.company.entity.Seaport;
 import ua.cruise.company.repository.ExcursionRepository;
 import ua.cruise.company.repository.OrderRepository;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 
 import java.util.HashSet;
 import java.util.List;

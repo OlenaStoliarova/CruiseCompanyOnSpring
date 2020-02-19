@@ -10,6 +10,7 @@ import ua.cruise.company.entity.Order;
 import ua.cruise.company.entity.OrderStatus;
 import ua.cruise.company.repository.ExtraRepository;
 import ua.cruise.company.repository.OrderRepository;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 
 import java.util.ArrayList;
 import java.util.HashSet;

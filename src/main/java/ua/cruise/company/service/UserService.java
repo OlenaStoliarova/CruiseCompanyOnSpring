@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.cruise.company.entity.User;
 import ua.cruise.company.entity.UserRole;
 import ua.cruise.company.repository.UserRepository;
+import ua.cruise.company.service.exception.NoEntityFoundException;
+import ua.cruise.company.service.exception.NonUniqueObjectException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

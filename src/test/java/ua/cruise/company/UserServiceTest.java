@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.cruise.company.entity.User;
-import ua.cruise.company.service.NoEntityFoundException;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.UserService;
 import ua.cruise.company.entity.UserRole;
-import ua.cruise.company.service.NonUniqueObjectException;
+import ua.cruise.company.service.exception.NonUniqueObjectException;
 
 @SpringBootTest
 public class UserServiceTest {

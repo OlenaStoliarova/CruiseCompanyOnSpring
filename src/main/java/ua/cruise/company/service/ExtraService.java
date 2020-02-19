@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ua.cruise.company.entity.Extra;
 import ua.cruise.company.repository.ExtraRepository;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 
 import java.util.List;
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.cruise.company.entity.User;
 import ua.cruise.company.entity.UserRole;
-import ua.cruise.company.service.NoEntityFoundException;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.UserService;
 
 import java.util.Arrays;

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.cruise.company.entity.Excursion;
 import ua.cruise.company.repository.ExcursionRepository;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 
 import java.util.List;
 import java.util.Optional;

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.cruise.company.controller.form.RegistrationForm;
 import ua.cruise.company.entity.User;
 import ua.cruise.company.entity.UserRole;
-import ua.cruise.company.service.NonUniqueObjectException;
+import ua.cruise.company.service.exception.NonUniqueObjectException;
 import ua.cruise.company.service.UserService;
 
 import javax.validation.Valid;

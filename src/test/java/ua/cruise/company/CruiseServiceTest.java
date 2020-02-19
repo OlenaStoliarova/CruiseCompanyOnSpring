@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ua.cruise.company.entity.Cruise;
 import ua.cruise.company.service.CruiseService;
-import ua.cruise.company.service.NoEntityFoundException;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.ShipService;
 import ua.cruise.company.entity.Ship;
 
