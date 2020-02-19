@@ -25,6 +25,11 @@
                         </div>
                         <input type="submit" class="btn btn-primary" th:value="#{ui.login.login}" />
                     </form>
+
+                    <div class="text-right">
+                        <span th:utext="#{ui.registration.question}"/>
+                        <a class="btn btn-outline-secondary" href="/registration" th:utext="#{ui.registration.register}"></a>
+                    </div>
                 </div>
             </div>
         </div>

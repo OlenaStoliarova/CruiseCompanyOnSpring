@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ua.training.cruise_company_on_spring.entity.User;
 import ua.training.cruise_company_on_spring.entity.UserRole;
 import ua.training.cruise_company_on_spring.service.NoEntityFoundException;
+import ua.training.cruise_company_on_spring.service.NonUniqueObjectException;
 import ua.training.cruise_company_on_spring.service.UserService;
 
 @SpringBootTest
@@ -14,7 +15,7 @@ public class UserServiceTest {
     private UserService userService;
 
     @Test
-    void addNewUser(){
+    void addNewUser() throws NonUniqueObjectException {
         boolean result = userService.saveUser(User.builder()
                 .email("admin@a.a")
                 .password("admin")

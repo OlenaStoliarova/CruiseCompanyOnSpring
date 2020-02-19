@@ -6,7 +6,8 @@
 
 <br/><br/>
 <div class="container">
-    <h2 th:utext="#{ui.main.greeting}" ></h2>
+    <h2 th:if="${param.registration_success == null}" th:utext="#{ui.main.greeting}" ></h2>
+    <h2 th:if="${param.registration_success}" th:utext="#{ui.registration.success}" ></h2>
     <a class="btn btn-info" href="/main" th:utext="#{ui.login.login}"></a>
 </div>
 

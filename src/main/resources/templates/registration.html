@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+
+<div class="container">
+    <div class="card-header">
+        <h3 class="card-title" th:utext="#{ui.registration.title}"></h3>
+    </div><br/>
+    <div class="card-body">
+        <h6 class="text-danger" th:if="${validation_errors}" th:text="#{ui.error.form.validation}"></h6>
+        <h6 class="text-danger" th:if="${non_unique}" th:text="#{ui.registration.non.unique}"></h6>
+        <h6 class="text-danger" th:if="${registration_error}" th:text="#{ui.registration.error}"></h6>
+
+        <form th:action="@{/registration}" th:object="${registration_form}" method="post">
+            <div class="form-group">
+                <label for="email" th:utext="#{ui.registration.email}"></label>
+                <input type="email" class="form-control" id="email" name="email" required th:value="${user.email}">
+            </div>
+            <div class="form-group">
+                <label for="password" th:utext="#{ui.login.password}"></label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="repeatPassword" th:utext="#{ui.registration.password.repeat}"></label>
+                <input type="password" class="form-control" id="repeatPassword" name="repeatPassword" required>
+            </div>
+
+            <div class="form-group">
+                <label for="firstNameEn" th:utext="#{ui.registration.first.name.en}"></label>
+                <input class="form-control" id="firstNameEn" name="firstNameEn" required th:value="${user.firstNameEn}"
+                       th:pattern="#{regex.name.en}" th:title="#{regex.name.en.tip}">
+            </div>
+            <div class="form-group">
+                <label for="lastNameEn" th:utext="#{ui.registration.last.name.en}"></label>
+                <input class="form-control" id="lastNameEn" name="lastNameEn" required th:value="${user.lastNameEn}"
+                       th:pattern="#{regex.name.en}" th:title="#{regex.name.en.tip}">
+            </div>
+            <div class="form-group">
+                <label for="firstNameNative" th:utext="#{ui.registration.first.name.native}"></label>
+                <input class="form-control" id="firstNameNative" name="firstNameNative" required th:value="${user.firstNameNative}">
+            </div>
+            <div class="form-group">
+                <label for="lastNameNative" th:utext="#{ui.registration.last.name.native}"></label>
+                <input class="form-control" id="lastNameNative" name="lastNameNative" required th:value="${user.lastNameNative}">
+            </div>
+
+            <input type="submit" class="btn btn-primary" th:value="#{ui.registration.register}"/>
+        </form>
+    </h6>
+</div>
+
+
+</body>
+</html>

@@ -41,7 +41,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public boolean saveUser(User user) {
+    public boolean saveUser(User user) throws NonUniqueObjectException {
         if(user.getRole() == null)
             user.setRole(UserRole.ROLE_TOURIST);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService {
             userRepository.save(user);
         }catch (DataIntegrityViolationException exception){
             LOGGER.error("User wasn't saved {}, {}", user, exception.getMessage());
-            return false;
+            throw new NonUniqueObjectException("User with such email already exists");
         }
 
         return true;

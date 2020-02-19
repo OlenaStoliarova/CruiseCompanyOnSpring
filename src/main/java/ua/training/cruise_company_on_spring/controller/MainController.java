@@ -1,14 +1,30 @@
 package ua.training.cruise_company_on_spring.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ua.training.cruise_company_on_spring.controller.form.RegistrationForm;
+import ua.training.cruise_company_on_spring.entity.User;
 import ua.training.cruise_company_on_spring.entity.UserRole;
+import ua.training.cruise_company_on_spring.service.NonUniqueObjectException;
+import ua.training.cruise_company_on_spring.service.UserService;
+
+import javax.validation.Valid;
 
 @Controller
 public class MainController {
+    private static final Logger LOGGER= LoggerFactory.getLogger(MainController.class);
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = { "/" })
     public String firstPage() {
@@ -23,6 +39,49 @@ public class MainController {
         model.addAttribute("error", error != null);
         model.addAttribute("logout", logout != null);
         return "login";
+    }
+
+    @RequestMapping( "/registration" )
+    public String showRegistartionForm(Model model){
+        model.addAttribute("user", new RegistrationForm());
+        return "registration";
+    }
+
+    @PostMapping( "/registration" )
+    public String registerNewUser(@Valid @ModelAttribute("registration_form") RegistrationForm registrationForm,
+                                  BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors() ||
+                !registrationForm.getPassword().equals(registrationForm.getRepeatPassword()) ){
+
+            model.addAttribute("validation_errors", true);
+            model.addAttribute("user", registrationForm);
+            return "registration";
+        }
+
+        LOGGER.info("registerNewUser: " + registrationForm);
+        User user = User.builder()
+                .email(registrationForm.getEmail())
+                .password(registrationForm.getPassword())
+                .firstNameEn(registrationForm.getFirstNameEn())
+                .lastNameEn(registrationForm.getLastNameEn())
+                .firstNameNative(registrationForm.getFirstNameNative())
+                .lastNameNative(registrationForm.getLastNameNative())
+                .build();
+
+        try{
+            userService.saveUser(user);
+        } catch (NonUniqueObjectException e) {
+            model.addAttribute("non_unique", true);
+            model.addAttribute("user", registrationForm);
+            return "registration";
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            model.addAttribute("registration_error", true);
+            model.addAttribute("user", registrationForm);
+            return "registration";
+        }
+
+        return "redirect:/?registration_success=true";
     }
 
 
