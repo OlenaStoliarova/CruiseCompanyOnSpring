@@ -7,14 +7,14 @@ import ua.cruise.company.dto.ExcursionDTO;
 import ua.cruise.company.dto.OrderDTO;
 import ua.cruise.company.dto.converter.ExcursionDTOConverter;
 import ua.cruise.company.dto.converter.OrderDTOConverter;
-import ua.cruise.company.entity.Excursion;
-import ua.cruise.company.entity.Order;
-import ua.cruise.company.entity.OrderStatus;
-import ua.cruise.company.entity.Seaport;
+import ua.cruise.company.entity.*;
+import ua.cruise.company.repository.CruiseRepository;
 import ua.cruise.company.repository.ExcursionRepository;
 import ua.cruise.company.repository.OrderRepository;
 import ua.cruise.company.service.exception.NoEntityFoundException;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +22,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class TouristOrdersService {
+public class TouristOrderService {
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private CruiseRepository cruiseRepository;
     @Autowired
     private ExcursionRepository excursionRepository;
 
@@ -32,6 +34,44 @@ public class TouristOrdersService {
         return orderRepository.findByUser_IdOrderByCreationDateDesc(userId).stream()
                 .map(OrderDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void bookCruise(User tourist, Long cruiseId, int quantity){
+        Optional<Cruise> cruiseFromDB = cruiseRepository.findById(cruiseId);
+
+        if( cruiseFromDB.isPresent()) {
+            Cruise cruise = cruiseFromDB.get();
+            cruise.setVacancies(cruise.getVacancies() - quantity);
+
+            Order order = Order.builder()
+                    .creationDate(LocalDate.now())
+                    .user(tourist)
+                    .cruise(cruise)
+                    .quantity(quantity)
+                    .totalPrice(cruise.getPrice().multiply(BigDecimal.valueOf(quantity)))
+                    .status(OrderStatus.NEW)
+                    .build();
+
+            cruiseRepository.save(cruise);
+            orderRepository.save(order);
+        }
+    }
+
+    @Transactional
+    public void cancelBooking(Long orderId) {
+        Optional<Order> orderFromDB = orderRepository.findById(orderId);
+
+        if (orderFromDB.isPresent()) {
+            Order order = orderFromDB.get();
+            order.setStatus(OrderStatus.CANCELED);
+
+            Cruise cruise = order.getCruise();
+            cruise.setVacancies(cruise.getVacancies() + order.getQuantity());
+
+            cruiseRepository.save(cruise);
+            orderRepository.save(order);
+        }
     }
 
     @Transactional

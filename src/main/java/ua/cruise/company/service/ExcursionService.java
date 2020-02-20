@@ -12,8 +12,6 @@ import ua.cruise.company.repository.ExcursionRepository;
 import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.exception.NonUniqueObjectException;
 
-import java.util.List;
-
 @Service
 public class ExcursionService {
     private static final Logger LOGGER = LogManager.getLogger(ExcursionService.class);

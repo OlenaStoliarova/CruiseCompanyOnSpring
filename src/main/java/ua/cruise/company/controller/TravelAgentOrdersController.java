@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.cruise.company.entity.Order;
 import ua.cruise.company.service.exception.NoEntityFoundException;
-import ua.cruise.company.service.TravelAgentOrdersService;
+import ua.cruise.company.service.TravelAgentOrderService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +15,11 @@ import java.util.List;
 @RequestMapping("/travel_agent")
 public class TravelAgentOrdersController {
     @Autowired
-    private TravelAgentOrdersService travelAgentOrdersService;
+    private TravelAgentOrderService travelAgentOrderService;
 
     @GetMapping("/orders")
     public String showAllOrdersList(Model model) {
-        model.addAttribute("orders", travelAgentOrdersService.allOrders());
+        model.addAttribute("orders", travelAgentOrderService.allOrders());
         return "/travel_agent/orders";
     }
 
@@ -27,7 +27,7 @@ public class TravelAgentOrdersController {
     @GetMapping("/order/{order}/add_bonuses")
     public String showExcursionsForOrder(@PathVariable Order order, Model model){
         try{
-            model.addAttribute( "bonuses", travelAgentOrdersService.allBonusesForCruise(order.getId()));
+            model.addAttribute( "bonuses", travelAgentOrderService.allBonusesForCruise(order.getId()));
             model.addAttribute( "orderId", order.getId());
             model.addAttribute( "totalPrice", order.getTotalPrice());
             return "/travel_agent/cruise_bonuses";
@@ -43,7 +43,7 @@ public class TravelAgentOrdersController {
         try{
             if( chosenBonuses == null)
                 chosenBonuses = new ArrayList<>();
-            travelAgentOrdersService.addBonusesToOrder(orderId, chosenBonuses);
+            travelAgentOrderService.addBonusesToOrder(orderId, chosenBonuses);
             return "redirect:/travel_agent/orders";
         } catch (NoEntityFoundException ex){
             return "redirect:/travel_agent/orders?error";

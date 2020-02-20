@@ -14,14 +14,13 @@ import ua.cruise.company.repository.ExtraRepository;
 import ua.cruise.company.repository.OrderRepository;
 import ua.cruise.company.service.exception.NoEntityFoundException;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class TravelAgentOrdersService {
+public class TravelAgentOrderService {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
