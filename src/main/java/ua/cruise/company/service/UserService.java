@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.cruise.company.dto.UserDTO;
+import ua.cruise.company.dto.converter.UserDTOConverter;
 import ua.cruise.company.entity.User;
 import ua.cruise.company.entity.UserRole;
 import ua.cruise.company.repository.UserRepository;
@@ -19,6 +21,7 @@ import ua.cruise.company.service.exception.NonUniqueObjectException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -39,8 +42,11 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public List<User> allUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> allUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(UserDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public boolean saveUser(User user) throws NonUniqueObjectException {

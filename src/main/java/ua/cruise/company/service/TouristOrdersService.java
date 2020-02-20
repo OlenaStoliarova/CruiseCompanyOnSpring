@@ -3,8 +3,10 @@ package ua.cruise.company.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.cruise.company.dto.UserOrderDTO;
-import ua.cruise.company.dto.utility.OrderDTOConvertUtils;
+import ua.cruise.company.dto.ExcursionDTO;
+import ua.cruise.company.dto.OrderDTO;
+import ua.cruise.company.dto.converter.ExcursionDTOConverter;
+import ua.cruise.company.dto.converter.OrderDTOConverter;
 import ua.cruise.company.entity.Excursion;
 import ua.cruise.company.entity.Order;
 import ua.cruise.company.entity.OrderStatus;
@@ -26,8 +28,10 @@ public class TouristOrdersService {
     @Autowired
     private ExcursionRepository excursionRepository;
 
-    public List<UserOrderDTO> allOrdersOfUser(Long userId) {
-        return orderRepository.findByUser_IdOrderByCreationDateDesc(userId).stream().map(TouristOrdersService::orderToDTO).collect(Collectors.toList());
+    public List<OrderDTO> allOrdersOfUser(Long userId) {
+        return orderRepository.findByUser_IdOrderByCreationDateDesc(userId).stream()
+                .map(OrderDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -41,10 +45,15 @@ public class TouristOrdersService {
         }
     }
 
-    public List<Excursion> allExcursionsForCruise(Long orderId) throws NoEntityFoundException {
+    public List<ExcursionDTO> allExcursionsForCruise(Long orderId) throws NoEntityFoundException {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
-        List<Long> portIds = order.getCruise().getShip().getVisitingPorts().stream().map(Seaport::getId).collect(Collectors.toList());
-        return excursionRepository.findBySeaport_IdIn(portIds);
+        List<Long> portIds = order.getCruise().getShip().getVisitingPorts().stream()
+                .map(Seaport::getId)
+                .collect(Collectors.toList());
+        List<Excursion> excursions = excursionRepository.findBySeaport_IdIn(portIds);
+        return excursions.stream()
+                .map(ExcursionDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -56,25 +65,6 @@ public class TouristOrdersService {
         }
         order.setStatus(OrderStatus.EXCURSIONS_ADDED);
         orderRepository.save(order);
-    }
-
-
-    static UserOrderDTO orderToDTO(Order order){
-        return UserOrderDTO.builder()
-                .orderId(order.getId())
-                .orderDate(order.getCreationDate())
-                .routeNameEn(order.getCruise().getShip().getRouteNameEn())
-                .routeNameUkr(order.getCruise().getShip().getRouteNameUkr())
-                .cruiseStartingDate(order.getCruise().getStartingDate())
-                .cruiseFinishingDate( order.getCruise().getStartingDate().plusDays( order.getCruise().getShip().getOneTripDurationDays()))
-                .quantity(order.getQuantity())
-                .totalPrice(order.getTotalPrice())
-                .status(order.getStatus())
-                .addedExcursionsEn(OrderDTOConvertUtils.convertOrderExcursionsToString(order, "En"))
-                .addedExcursionsUkr(OrderDTOConvertUtils.convertOrderExcursionsToString(order, "Ukr"))
-                .freeExtrasEn(OrderDTOConvertUtils.convertOrderFreeExtrasToString(order, "En"))
-                .freeExtrasUkr(OrderDTOConvertUtils.convertOrderFreeExtrasToString(order, "Ukr"))
-                .build();
     }
 
 }

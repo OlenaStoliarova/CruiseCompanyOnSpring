@@ -16,10 +16,8 @@
                 <thead>
                 <tr class="table-primary">
                     <th></th>
-                    <th th:utext="#{ui.excursion.name.en}"></th>
-                    <th th:utext="#{ui.excursion.name.ukr}"></th>
-                    <th th:utext="#{ui.excursion.description.en}"></th>
-                    <th th:utext="#{ui.excursion.description.ukr}"></th>
+                    <th th:utext="#{ui.excursion.name}"></th>
+                    <th th:utext="#{ui.excursion.description}"></th>
                     <th th:utext="#{ui.excursion.duration}"></th>
                     <th th:utext="#{ui.excursion.price}"></th>
                     <th th:utext="#{ui.seaport}"></th>
@@ -32,14 +30,12 @@
                             <input type="checkbox" class="form-check-input" id="chosenExcursions" name="chosenExcursions" th:value="${excursion.id}">
                         </div>
                     </td>
-                    <td th:text="${excursion.nameEn}"></td>
-                    <td th:text="${excursion.nameUkr}"></td>
-                    <td th:text="${excursion.descriptionEn}"></td>
-                    <td th:text="${excursion.descriptionUkr}"></td>
+                    <td th:text="${excursion.name}"></td>
+                    <td th:text="${excursion.description}"></td>
                     <td th:text="${excursion.approximateDurationHr}"></td>
-                    <td th:text="#{localization.price.multiplier}*${excursion.priceUSD}"></td>
-                    <td th:if="#{localization.lang}==UKR" th:text="${excursion.seaport.nameUkr + '-' + excursion.seaport.countryUkr}"></td>
-                    <td th:unless="#{localization.lang}==UKR" th:text="${excursion.seaport.nameEn + '-' + excursion.seaport.countryEn}"></td>
+                    <td th:with="total=${excursion.price}"
+                        th:text="${#numbers.formatDecimal(total, 1, 'DEFAULT', 2, 'DEFAULT')}"></td>
+                    <td th:text="${excursion.seaport.name + '(' + excursion.seaport.country} + ')'"></td>
                 </tr>
                 </tbody>
             </table>

@@ -9,13 +9,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.cruise.company.dto.CruiseDTO;
-import ua.cruise.company.entity.*;
+import ua.cruise.company.dto.converter.CruiseDTOConverter;
+import ua.cruise.company.entity.Cruise;
+import ua.cruise.company.entity.Order;
+import ua.cruise.company.entity.OrderStatus;
+import ua.cruise.company.entity.User;
 import ua.cruise.company.repository.CruiseRepository;
 import ua.cruise.company.repository.OrderRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +35,7 @@ public class OrderCruiseService {
     public Page<CruiseDTO> allCruisesFromTodayPaginated(Pageable pageable) {
         Page<Cruise> cruises = cruiseRepository.findAllByStartingDateGreaterThanEqualAndVacanciesGreaterThanOrderByStartingDateAsc(LocalDate.now(), 0, pageable);
         List<CruiseDTO> curPageDTO = cruises.getContent().stream()
-                .map(OrderCruiseService::cruiseToDTO)
+                .map(CruiseDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
         return new PageImpl<>(curPageDTO, pageable, cruises.getTotalElements());
     }
@@ -73,22 +76,6 @@ public class OrderCruiseService {
             cruiseRepository.save(cruise);
             orderRepository.save(order);
         }
-    }
-
-    static CruiseDTO cruiseToDTO(Cruise cruise){
-        List<Seaport> portsList = new ArrayList<>(cruise.getShip().getVisitingPorts());
-
-        return CruiseDTO.builder()
-                .cruiseId(cruise.getId())
-                .startingDate(cruise.getStartingDate())
-                .routeNameEn(cruise.getShip().getRouteNameEn())
-                .routeNameUkr(cruise.getShip().getRouteNameUkr())
-                .portsList(portsList)
-                .durationDays(cruise.getShip().getOneTripDurationDays())
-                .shipName(cruise.getShip().getName())
-                .shipCapacity(cruise.getShip().getCapacity())
-                .price(cruise.getPrice())
-                .build();
     }
 
 }

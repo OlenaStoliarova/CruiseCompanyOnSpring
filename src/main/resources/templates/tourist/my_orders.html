@@ -10,6 +10,7 @@
         <table class="table table-condensed table-bordered table-hover">
             <thead>
             <tr class="table-primary">
+                <th th:utext="#{ui.order.id}"></th>
                 <th th:utext="#{ui.order.date}"></th>
                 <th th:utext="#{ui.order.details}"></th>
                 <th th:utext="#{ui.cruise.ticket.quantity}"></th>
@@ -22,38 +23,36 @@
             </thead>
             <tbody>
             <tr th:each="order: ${orders}">
-                <td th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"></td>
+                <td th:text="${order.id}"></td>
+                <td th:text="${'' + order.creationDate}"></td>
                 <td>
-                    <span th:unless="#{localization.lang}==UKR" th:text="${order.routeNameEn}"></span>
-                    <span th:if="#{localization.lang}==UKR" th:text="${order.routeNameUkr}"></span>
-                    <div class="font-italic" th:text="${order.cruiseStartingDate + '-' + order.cruiseFinishingDate}"></div>
+                    <span th:text="${order.cruise.ship.routeName}"></span>
+                    <div class="font-italic" th:text="${order.cruise.startingDate + '-' + order.cruise.finishingDate}"></div>
                 </td>
                 <td th:text="${order.quantity}"></td>
                 <td>
-                    <span th:if="${order.status.name()=='NEW'}" th:utext="#{ui.order.excursions.promise}"></span>
-                    <span th:if="${order.status.name()=='CANCELED'}" th:utext="#{ui.order.canceled}"></span>
-                    <span th:if="${order.status.name()=='PAID'}">
-                        <a class="btn btn-success" th:text="#{ui.button.add}" th:href="@{/tourist/order/{id}/excursions(id=${order.orderId})}"></a>
+                    <span th:if="${order.status  =='NEW'}" th:utext="#{ui.order.excursions.promise}"></span>
+                    <span th:if="${order.status  =='CANCELED'}" th:utext="#{ui.order.canceled}"></span>
+                    <span th:if="${order.status  =='PAID'}">
+                        <a class="btn btn-success" th:text="#{ui.button.add}" th:href="@{/tourist/order/{id}/excursions(id=${order.id})}"></a>
                     </span>
-                    <span th:unless="#{localization.lang}==UKR" th:text="${order.addedExcursionsEn}"></span>
-                    <span th:if="#{localization.lang}==UKR" th:text="${order.addedExcursionsUkr}"></span>
+                    <span th:text="${order.addedExcursions}"></span>
                 </td>
                 <td>
-                    <span th:if="${order.freeExtrasEn}==null AND ${order.status.name()!='CANCELED'}" th:utext="#{ui.order.bonuses.promise}"></span>
-                    <span th:if="${order.status.name()=='CANCELED'}" th:utext="#{ui.order.canceled}"></span>
-                    <span th:unless="#{localization.lang}==UKR" th:text="${order.freeExtrasEn}"></span>
-                    <span th:if="#{localization.lang}==UKR" th:text="${order.freeExtrasUkr}"></span>
+                    <span th:if="${order.freeExtras}==null AND ${order.status  !='CANCELED'}" th:utext="#{ui.order.bonuses.promise}"></span>
+                    <span th:if="${order.status  =='CANCELED'}" th:utext="#{ui.order.canceled}"></span>
+                    <span th:text="${order.freeExtras}"></span>
                 </td>
-                <td th:with="total=#{localization.price.multiplier}*${order.totalPrice}"
+                <td th:with="total=${order.totalPrice}"
                     th:text="${#numbers.formatDecimal(total, 1, 'DEFAULT', 2, 'DEFAULT')}"></td>
                 <td th:insert="common_fragments::order_status_nice"></td>
                 <td>
-                    <span th:if="${order.status.name()=='NEW'}">
-                        <a class="btn btn-success" th:text="#{ui.button.pay}" th:href="@{/tourist/pay_order/{id}(id=${order.orderId})}"></a>
-                        <a class="btn btn-secondary" th:text="#{ui.button.cancel}" th:href="@{/tourist/cancel_order/{id}(id=${order.orderId})}"></a>
+                    <span th:if="${order.status  =='NEW'}">
+                        <a class="btn btn-success" th:text="#{ui.button.pay}" th:href="@{/tourist/pay_order/{id}(id=${order.id})}"></a>
+                        <a class="btn btn-secondary" th:text="#{ui.button.cancel}" th:href="@{/tourist/cancel_order/{id}(id=${order.id})}"></a>
                     </span>
-                    <a th:if="${order.status.name()=='EXTRAS_ADDED'}" class="btn btn-success" th:text="#{ui.button.print}"
-                       th:href="@{/tourist/print_order/{id}(id=${order.orderId})}"></a>
+                    <a th:if="${order.status  =='EXTRAS_ADDED'}" class="btn btn-success" th:text="#{ui.button.print}"
+                       th:href="@{/tourist/print_order/{id}(id=${order.id})}"></a>
                 </td>
             </tr>
             </tbody>

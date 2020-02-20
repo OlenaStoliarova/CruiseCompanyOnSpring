@@ -9,17 +9,16 @@
 <br/>
 
 <div class="container">
-    <h4 class="font-weight-bold" th:unless="#{localization.lang}==UKR" th:text="${cruise?.routeNameEn}"></h4>
-    <h4 class="font-weight-bold" th:if="#{localization.lang}==UKR" th:text="${cruise?.routeNameUkr}"></h4>
-    <div th:insert="common_fragments::route_ports_to_string" th:with="portsList=${cruise.portsList}"></div>
+    <h4 class="font-weight-bold" th:text="${cruise.ship.routeName}"></h4>
+    <div th:insert="common_fragments::route_ports_to_string" th:with="portsList=${cruise.ship.visitingPorts}"></div>
     <div class="font-italic font-weight-bold" th:text="${cruise.startingDate + '-' + cruise.finishingDate}"></div>
-    <div th:text="${cruise.shipName}"></div>
+    <div th:text="${cruise.ship.name}"></div>
     <br/>
 
     <h6 class="text-danger" th:if="${param.error}" th:utext="#{ui.cruise.order.error}"></h6>
 
-    <form class="form-inline" th:action="@{/tourist/order/cruise/{id}(id=${cruise.cruiseId})}" method="post">
-        <input type="hidden" name="id" th:value="${cruise.cruiseId}">
+    <form class="form-inline" th:action="@{/tourist/order/cruise/{id}(id=${cruise.id})}" method="post">
+        <input type="hidden" name="id" th:value="${cruise.id}">
 
         <div class="form-group mr-3">
             <label for="quantity" th:utext="#{ui.cruise.ticket.quantity}"></label>

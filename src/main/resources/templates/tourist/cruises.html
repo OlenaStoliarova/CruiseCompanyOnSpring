@@ -32,18 +32,19 @@
             <tr th:each="cruise: ${cruises}">
                 <td th:text="${cruise.startingDate}"></td>
                 <td>
-                    <span th:unless="#{localization.lang}==UKR" th:text="${cruise.routeNameEn}"></span>
-                    <span th:if="#{localization.lang}==UKR" th:text="${cruise.routeNameUkr}"></span>
-                    <div th:insert="common_fragments::route_ports_to_string" th:with="portsList=${cruise.portsList}"></div>
+                    <span th:text="${cruise.ship.routeName}"></span>
+                    <div th:insert="common_fragments::route_ports_to_string" th:with="portsList=${cruise.ship.visitingPorts}"></div>
                 </td>
-                <td th:text="${cruise.durationDays}"></td>
+                <td th:text="${cruise.ship.oneTripDurationDays}"></td>
                 <td>
-                    <span th:text="${cruise.shipName + '(' + cruise.shipCapacity + ')'}"></span>
+                    <span th:text="${cruise.ship.name + '(' + cruise.ship.capacity + ')'}"></span>
                 </td>
-                <td th:text="#{localization.price.multiplier}*${cruise.price}"></td>
+                <td th:with="total=${cruise.price}"
+                    th:text="${#numbers.formatDecimal(total, 1, 'DEFAULT', 2, 'DEFAULT')}"></td>
+
 
                 <td>
-                    <a th:href="@{/tourist/order/cruise/{id}(id=${cruise.cruiseId})}" th:text="#{ui.button.order}"></a>
+                    <a th:href="@{/tourist/order/cruise/{id}(id=${cruise.id})}" th:text="#{ui.button.order}"></a>
                 </td>
             </tr>
             </tbody>

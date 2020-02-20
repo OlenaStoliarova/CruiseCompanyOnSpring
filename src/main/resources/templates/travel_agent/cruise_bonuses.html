@@ -19,8 +19,7 @@
         <fieldset>
             <div class="form-group form-check" th:each="bonus: ${bonuses}">
                 <input type="checkbox" class="form-check-input" id="chosenBonuses" name="chosenBonuses" th:value="${bonus.id}">
-                <label th:unless="#{localization.lang}==UKR" class="form-check-label" for="chosenBonuses" th:text="${bonus.nameEn}"></label>
-                <label th:if="#{localization.lang}==UKR" class="form-check-label" for="chosenBonuses" th:text="${bonus.nameUkr}"></label>
+                <label class="form-check-label" for="chosenBonuses" th:text="${bonus.name}"></label>
             </div>
         </fieldset>
         <input type="submit" class="btn btn-success" th:value="#{ui.button.add}" />
