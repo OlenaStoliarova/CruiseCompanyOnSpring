@@ -18,17 +18,12 @@ import ua.cruise.company.repository.UserRepository;
 import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.exception.NonUniqueObjectException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
-    private static final Logger LOGGER= LoggerFactory.getLogger(UserService.class);
-
-    @PersistenceContext
-    private EntityManager em;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     UserRepository userRepository;
@@ -50,12 +45,12 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean saveUser(User user) throws NonUniqueObjectException {
-        if(user.getRole() == null)
+        if (user.getRole() == null)
             user.setRole(UserRole.ROLE_TOURIST);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        try{
+        try {
             userRepository.save(user);
-        }catch (DataIntegrityViolationException exception){
+        } catch (DataIntegrityViolationException exception) {
             LOGGER.error("User wasn't saved {}, {}", user, exception.getMessage());
             throw new NonUniqueObjectException("User with such email already exists");
         }

@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import ua.cruise.company.service.UserService;
 
 @Configuration
@@ -26,21 +25,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                //Доступ только для не зарегистрированных пользователей
                 .antMatchers("/registration").not().fullyAuthenticated()
-                //Доступ только для пользователей с ролью Администратор
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/tourist/**").hasRole("TOURIST")
                 .antMatchers("/travel_agent/**").hasRole("TRAVEL_AGENT")
-                //Доступ разрешен всем пользователей
                 .antMatchers("/", "/css/**").permitAll()
-                //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
-                    //Настройка для входа в систему
                     .formLogin().loginPage("/login")
                     .permitAll()
-                    //Перенарпавление на главную страницу после успешного входа
                     .defaultSuccessUrl("/main")
                 .and()
                     .logout()

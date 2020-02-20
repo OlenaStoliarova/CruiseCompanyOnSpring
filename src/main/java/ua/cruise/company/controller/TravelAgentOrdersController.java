@@ -30,27 +30,27 @@ public class TravelAgentOrdersController {
 
 
     @GetMapping("/order/{order}/add_bonuses")
-    public String showExcursionsForOrder(@PathVariable Order order, Model model){
-        try{
-            model.addAttribute( "bonuses", travelAgentOrderService.allBonusesForCruise(order.getId()));
-            model.addAttribute( "orderId", order.getId());
-            model.addAttribute( "totalPrice", order.getTotalPrice());
+    public String showExcursionsForOrder(@PathVariable Order order, Model model) {
+        try {
+            model.addAttribute("bonuses", travelAgentOrderService.allBonusesForCruise(order.getId()));
+            model.addAttribute("orderId", order.getId());
+            model.addAttribute("totalPrice", order.getTotalPrice());
             return "/travel_agent/cruise_bonuses";
-        } catch (NoEntityFoundException ex){
+        } catch (NoEntityFoundException ex) {
             return "redirect:/travel_agent/orders?error";
         }
     }
 
     @PostMapping("/order/{orderId}/add_bonuses")
     public String addExcursionToOrder(@PathVariable Long orderId,
-                                      @RequestParam(value = "chosenBonuses", required = false) List<Long> chosenBonuses){
+                                      @RequestParam(value = "chosenBonuses", required = false) List<Long> chosenBonuses) {
 
-        try{
-            if( chosenBonuses == null)
+        try {
+            if (chosenBonuses == null)
                 chosenBonuses = new ArrayList<>();
             travelAgentOrderService.addBonusesToOrder(orderId, chosenBonuses);
             return "redirect:/travel_agent/orders";
-        } catch (NoEntityFoundException ex){
+        } catch (NoEntityFoundException ex) {
             return "redirect:/travel_agent/orders?error";
         }
     }

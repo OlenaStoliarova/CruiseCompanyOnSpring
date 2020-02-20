@@ -23,7 +23,7 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/travel_agent")
 public class TravelAgentExcursionsController {
-    private static final Logger LOGGER= LoggerFactory.getLogger(TravelAgentExcursionsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TravelAgentExcursionsController.class);
 
     public static final int DEFAULT_PAGE_SIZE_FOR_EXCURSIONS_LIST = 4;
 
@@ -36,10 +36,9 @@ public class TravelAgentExcursionsController {
     public String getExcursionsList(@RequestParam(required = false) Long seaportId,
                                     Model model,
                                     @PageableDefault(size = DEFAULT_PAGE_SIZE_FOR_EXCURSIONS_LIST) Pageable pageable) {
-        if(seaportId != null){
+        if (seaportId != null) {
             model.addAttribute("all_excursions", excursionService.allExcursionsInSeaport(seaportId, pageable.previousOrFirst()));
-        }
-        else {
+        } else {
             model.addAttribute("all_excursions", excursionService.allExcursions(pageable.previousOrFirst()));
         }
         model.addAttribute("all_seaports", seaportService.allPorts());
@@ -49,12 +48,11 @@ public class TravelAgentExcursionsController {
 
     @GetMapping("/edit_excursion")
     public String showExcursionEditForm(@RequestParam Long excursionId,
-                                        Model model){
+                                        Model model) {
         Excursion excursion;
-        try{
+        try {
             excursion = excursionService.getExcursionById(excursionId);
-        }
-        catch (NoEntityFoundException ex){
+        } catch (NoEntityFoundException ex) {
             model.addAttribute("no_excursion_found", true);
             return "/travel_agent/edit_excursion";
         }
@@ -70,7 +68,7 @@ public class TravelAgentExcursionsController {
                                        BindingResult bindingResult, Model model) {
 
         LOGGER.info("editing excursion {}, new data {}", excursionId, excursionForm);
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             LOGGER.error("Validation error: " + bindingResult.getFieldErrors());
             model.addAttribute("validation_errors", true);
             prefillForm(excursionForm, model);
@@ -78,10 +76,9 @@ public class TravelAgentExcursionsController {
         }
 
         Seaport port;
-        try{
+        try {
             port = seaportService.findPortById(excursionForm.getSeaportId());
-        }
-        catch (NoEntityFoundException ex){
+        } catch (NoEntityFoundException ex) {
             model.addAttribute("no_port_found", true);
             prefillForm(excursionForm, model);
             return "/travel_agent/edit_excursion";
@@ -101,8 +98,7 @@ public class TravelAgentExcursionsController {
             return "/travel_agent/edit_excursion";
         }
 
-        //if excursion was not updated
-        if ( !result) {
+        if (!result) {
             LOGGER.info("saveExcursion error");
             model.addAttribute("error", true);
             prefillForm(excursionForm, model);
@@ -115,17 +111,17 @@ public class TravelAgentExcursionsController {
 
 
     @GetMapping("/add_excursion")
-    public String showExcursionAddForm( Model model){
+    public String showExcursionAddForm(Model model) {
         prefillForm(new ExcursionForm(), model);
         return "/travel_agent/add_excursion";
     }
 
     @PostMapping("/add_excursion")
     public String saveNewExcursion(@Valid @ModelAttribute("excursion") ExcursionForm excursionForm,
-                                   BindingResult bindingResult, Model model)  {
+                                   BindingResult bindingResult, Model model) {
 
         LOGGER.info("adding excursion: " + excursionForm);
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             LOGGER.error("Validation error: " + bindingResult.getFieldErrors());
             model.addAttribute("validation_errors", true);
             prefillForm(excursionForm, model);
@@ -133,10 +129,9 @@ public class TravelAgentExcursionsController {
         }
 
         Seaport port;
-        try{
+        try {
             port = seaportService.findPortById(excursionForm.getSeaportId());
-        }
-        catch (NoEntityFoundException ex){
+        } catch (NoEntityFoundException ex) {
             model.addAttribute("no_port_found", true);
             prefillForm(excursionForm, model);
             return "/travel_agent/add_excursion";
@@ -155,8 +150,7 @@ public class TravelAgentExcursionsController {
             return "/travel_agent/add_excursion";
         }
 
-        //if excursion was not added
-        if ( !result) {
+        if (!result) {
             LOGGER.info("saveExcursion error");
             model.addAttribute("error", true);
             prefillForm(excursionForm, model);
@@ -172,7 +166,6 @@ public class TravelAgentExcursionsController {
         excursionService.deleteExcursion(excursionId);
         return "redirect:/travel_agent/excursions";
     }
-
 
 
     private void prefillForm(ExcursionForm excursionForm, Model model) {
