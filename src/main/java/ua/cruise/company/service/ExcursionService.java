@@ -21,10 +21,6 @@ public class ExcursionService {
     @Autowired
     private ExcursionRepository excursionRepository;
 
-    public List<Excursion> allExcursions(){
-        return excursionRepository.findAllByOrderBySeaportNameEnAsc();
-    }
-
     public Page<Excursion> allExcursions(Pageable pageable){
         return excursionRepository.findAllByOrderBySeaportNameEnAsc(pageable);
     }

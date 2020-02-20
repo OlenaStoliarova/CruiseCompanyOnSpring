@@ -3,8 +3,10 @@ package ua.cruise.company.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.cruise.company.dto.TravelAgentOrderDTO;
-import ua.cruise.company.dto.utility.OrderDTOConvertUtils;
+import ua.cruise.company.dto.ExtraDTO;
+import ua.cruise.company.dto.OrderDTO;
+import ua.cruise.company.dto.converter.ExtraDTOConverter;
+import ua.cruise.company.dto.converter.OrderDTOConverter;
 import ua.cruise.company.entity.Extra;
 import ua.cruise.company.entity.Order;
 import ua.cruise.company.entity.OrderStatus;
@@ -26,13 +28,17 @@ public class TravelAgentOrdersService {
     private ExtraRepository extraRepository;
 
 
-    public List<TravelAgentOrderDTO> allOrders() {
-        return orderRepository.findAllByOrderByCreationDateDesc().stream().map(TravelAgentOrdersService::orderToDTO).collect(Collectors.toList());
+    public List<OrderDTO> allOrders() {
+        return orderRepository.findAllByOrderByCreationDateDesc().stream()
+                .map(OrderDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Extra> allBonusesForCruise(Long orderId) throws NoEntityFoundException {
+    public List<ExtraDTO> allBonusesForCruise(Long orderId) throws NoEntityFoundException {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
-        return new ArrayList<>(order.getCruise().getShip().getExtras());
+        return order.getCruise().getShip().getExtras().stream()
+                .map(ExtraDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -44,23 +50,5 @@ public class TravelAgentOrdersService {
         }
         order.setStatus(OrderStatus.EXTRAS_ADDED);
         orderRepository.save(order);
-    }
-
-
-    static TravelAgentOrderDTO orderToDTO(Order order){
-        return TravelAgentOrderDTO.builder()
-                .orderId(order.getId())
-                .clientEmail( order.getUser().getEmail())
-                .orderDate(order.getCreationDate())
-                .quantity(order.getQuantity())
-                .shipName( order.getCruise().getShip().getName())
-                .cruiseStartingDate(order.getCruise().getStartingDate())
-                .totalPrice(order.getTotalPrice())
-                .status(order.getStatus())
-                .addedExcursionsEn(OrderDTOConvertUtils.convertOrderExcursionsToString(order, "En"))
-                .addedExcursionsUkr(OrderDTOConvertUtils.convertOrderExcursionsToString(order, "Ukr"))
-                .freeExtrasEn(OrderDTOConvertUtils.convertOrderFreeExtrasToString(order, "En"))
-                .freeExtrasUkr(OrderDTOConvertUtils.convertOrderFreeExtrasToString(order, "Ukr"))
-                .build();
     }
 }

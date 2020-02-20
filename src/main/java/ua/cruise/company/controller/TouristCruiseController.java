@@ -10,14 +10,10 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.cruise.company.dto.CruiseDTO;
-import ua.cruise.company.dto.CruiseOrderFormDTO;
+import ua.cruise.company.dto.converter.CruiseDTOConverter;
 import ua.cruise.company.entity.Cruise;
-import ua.cruise.company.entity.Seaport;
 import ua.cruise.company.entity.User;
 import ua.cruise.company.service.OrderCruiseService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/tourist")
@@ -38,18 +34,7 @@ public class TouristCruiseController {
 
     @GetMapping("/order/cruise/{cruise}")
     public String showCruiseOrderForm(@PathVariable Cruise cruise, Model model){
-        List<Seaport> portsList = new ArrayList<>(cruise.getShip().getVisitingPorts());
-
-        model.addAttribute("cruise", CruiseOrderFormDTO.builder()
-                .cruiseId(cruise.getId())
-                .routeNameEn(cruise.getShip().getRouteNameEn())
-                .routeNameUkr(cruise.getShip().getRouteNameUkr())
-                .portsList(portsList)
-                .startingDate(cruise.getStartingDate())
-                .finishingDate( cruise.getStartingDate().plusDays(cruise.getShip().getOneTripDurationDays()))
-                .shipName(cruise.getShip().getName())
-                .price(cruise.getPrice())
-                .build());
+        model.addAttribute("cruise", CruiseDTOConverter.convertToDTO(cruise));
         return "/tourist/order_cruise";
     }
 

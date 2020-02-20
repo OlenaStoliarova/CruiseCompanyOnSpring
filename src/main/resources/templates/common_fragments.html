@@ -12,18 +12,14 @@
 
 
 <span th:fragment="route_ports_to_string" >
-    <span class="font-italic" th:unless="#{localization.lang}==UKR"  th:each="port, iterStat: ${portsList}" >
-        <span th:if="${iterStat.index < iterStat.size-1}" th:text="${port.nameEn + '(' + port.countryEn + ') - '}"></span>
-        <span th:if="${iterStat.index == iterStat.size-1}" th:text="${port.nameEn + '(' + port.countryEn + ')'}"></span>
-    </span>
-    <span class="font-italic" th:if="#{localization.lang}==UKR" th:each = "port, iterStat: ${portsList}" >
-        <span th:if="${iterStat.index < iterStat.size-1}" th:text="${port.nameUkr + '(' + port.countryUkr + ') - '}"></span>
-        <span th:if="${iterStat.index == iterStat.size-1}" th:text="${port.nameUkr + '(' + port.countryUkr + ')'}"></span>
+    <span class="font-italic"  th:each="port, iterStat: ${portsList}" >
+        <span th:if="${iterStat.index < iterStat.size-1}" th:text="${port.name + '(' + port.country + ') - '}"></span>
+        <span th:if="${iterStat.index == iterStat.size-1}" th:text="${port.name + '(' + port.country + ')'}"></span>
     </span>
 </span>
 
 <span th:fragment="order_status_nice">
-    <th:block th:switch="${order.status.name()}">
+    <th:block th:switch="${order.status}">
         <span th:case="'NEW'" th:text="#{ui.order.status.new}"></span>
         <span th:case="'CANCELED'" th:text="#{ui.order.status.canceled}"></span>
         <span th:case="'PAID'" th:text="#{ui.order.status.paid}"></span>
