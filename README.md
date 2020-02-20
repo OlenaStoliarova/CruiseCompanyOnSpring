@@ -15,11 +15,15 @@
 3. Update DB login and password in application.properties
 4. Compile and run jar 
 5. Go to link http://localhost:8080/
+6. Just in case here are credentials of already existing users:
+  - admin@a.a (password:admin, ROLE_ADMIN)
+  - boss@c.ua (password:boss, ROLE_TRAVEL_AGENT)
+  - misha@b.ua (password:user, ROLE_TOURIST)
 
 
 #### To get jar:
 
-mvn clean install -DskipTests=true
+mvn clean install
 
 #### To run jar:
 (from target directory)
