@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.cruise.company.entity.Excursion;
 import ua.cruise.company.repository.ExcursionRepository;
@@ -23,8 +25,12 @@ public class ExcursionService {
         return excursionRepository.findAllByOrderBySeaportNameEnAsc();
     }
 
-    public List<Excursion> allExcursionsInSeaport(Long seaportId){
-        return excursionRepository.findBySeaportId(seaportId);
+    public Page<Excursion> allExcursions(Pageable pageable){
+        return excursionRepository.findAllByOrderBySeaportNameEnAsc(pageable);
+    }
+
+    public Page<Excursion> allExcursionsInSeaport(Long seaportId, Pageable pageable){
+        return excursionRepository.findBySeaportId(seaportId, pageable);
     }
 
     public Excursion getExcursionById(Long id) throws NoEntityFoundException {

@@ -3,6 +3,8 @@ package ua.cruise.company.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +25,8 @@ import javax.validation.Valid;
 public class TravelAgentExcursionsController {
     private static final Logger LOGGER= LoggerFactory.getLogger(TravelAgentExcursionsController.class);
 
+    public static final int DEFAULT_PAGE_SIZE_FOR_EXCURSIONS_LIST = 4;
+
     @Autowired
     private ExcursionService excursionService;
     @Autowired
@@ -30,12 +34,13 @@ public class TravelAgentExcursionsController {
 
     @GetMapping("/excursions")
     public String getExcursionsList(@RequestParam(required = false) Long seaportId,
-                                    Model model) {
+                                    Model model,
+                                    @PageableDefault(size = DEFAULT_PAGE_SIZE_FOR_EXCURSIONS_LIST) Pageable pageable) {
         if(seaportId != null){
-            model.addAttribute("all_excursions", excursionService.allExcursionsInSeaport(seaportId));
+            model.addAttribute("all_excursions", excursionService.allExcursionsInSeaport(seaportId, pageable.previousOrFirst()));
         }
         else {
-            model.addAttribute("all_excursions", excursionService.allExcursions());
+            model.addAttribute("all_excursions", excursionService.allExcursions(pageable.previousOrFirst()));
         }
         model.addAttribute("all_seaports", seaportService.allPorts());
         return "/travel_agent/excursions";
