@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.cruise.company.controller.form.RegistrationForm;
+import ua.cruise.company.controller.form.mapper.RegistrationFormMapper;
 import ua.cruise.company.entity.User;
 import ua.cruise.company.entity.UserRole;
 import ua.cruise.company.service.exception.NonUniqueObjectException;
@@ -59,14 +60,7 @@ public class MainController {
         }
 
         LOGGER.info("registerNewUser: " + registrationForm);
-        User user = User.builder()
-                .email(registrationForm.getEmail())
-                .password(registrationForm.getPassword())
-                .firstNameEn(registrationForm.getFirstNameEn())
-                .lastNameEn(registrationForm.getLastNameEn())
-                .firstNameNative(registrationForm.getFirstNameNative())
-                .lastNameNative(registrationForm.getLastNameNative())
-                .build();
+        User user = new RegistrationFormMapper().mapToEntity(registrationForm);
 
         try{
             userService.saveUser(user);
