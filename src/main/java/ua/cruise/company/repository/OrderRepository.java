@@ -1,12 +1,12 @@
 package ua.cruise.company.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ua.cruise.company.entity.Order;
 
-import java.util.List;
-
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findByUser_IdOrderByCreationDateDesc(Long userId);
+    Page<Order> findByUser_IdOrderByCreationDateDesc(Long userId, Pageable pageable);
 
-    List<Order> findAllByOrderByCreationDateDesc();
+    Page<Order> findAllByOrderByCreationDateDesc(Pageable pageable);
 }

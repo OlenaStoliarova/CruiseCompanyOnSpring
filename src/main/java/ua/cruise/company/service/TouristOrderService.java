@@ -1,6 +1,9 @@
 package ua.cruise.company.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.cruise.company.dto.ExcursionDTO;
@@ -30,10 +33,12 @@ public class TouristOrderService {
     @Autowired
     private ExcursionRepository excursionRepository;
 
-    public List<OrderDTO> allOrdersOfUser(Long userId) {
-        return orderRepository.findByUser_IdOrderByCreationDateDesc(userId).stream()
+    public Page<OrderDTO> allOrdersOfUser(Long userId, Pageable pageable) {
+        Page<Order> orders =  orderRepository.findByUser_IdOrderByCreationDateDesc(userId, pageable);
+        List<OrderDTO> curPageDTO = orders.getContent().stream()
                 .map(OrderDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
+        return new PageImpl<>(curPageDTO, pageable, orders.getTotalElements());
     }
 
     @Transactional

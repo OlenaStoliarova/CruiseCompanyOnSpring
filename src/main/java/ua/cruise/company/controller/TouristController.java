@@ -23,7 +23,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/tourist")
 public class TouristController {
-    public static final int DEFAULT_PAGE_SIZE_FOR_CRUISE_LIST = 6;
+    public static final int DEFAULT_PAGE_SIZE = 5;
 
     @Autowired
     private TouristOrderService touristOrderService;
@@ -31,8 +31,8 @@ public class TouristController {
     private CruiseService cruiseService;
 
     @GetMapping("/cruises")
-    public String getAllPortsList(Model model,
-                                  @PageableDefault(size = DEFAULT_PAGE_SIZE_FOR_CRUISE_LIST) Pageable pageable)  {
+    public String getAllCruisesList(Model model,
+                                  @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable)  {
         Page<CruiseDTO> cruisesPage = cruiseService.allCruisesFromTodayPaginated( pageable.previousOrFirst());
         model.addAttribute("cruises", cruisesPage);
         return "/tourist/cruises";
@@ -61,8 +61,9 @@ public class TouristController {
 
     @GetMapping("/my_orders")
     public String getUserOrders(@AuthenticationPrincipal User user,
-                                Model model) {
-        model.addAttribute("orders", touristOrderService.allOrdersOfUser(user.getId()));
+                                Model model,
+                                @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
+        model.addAttribute("orders", touristOrderService.allOrdersOfUser(user.getId(), pageable.previousOrFirst()));
         return "/tourist/my_orders";
     }
 

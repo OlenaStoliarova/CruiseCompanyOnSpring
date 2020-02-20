@@ -1,6 +1,9 @@
 package ua.cruise.company.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.cruise.company.dto.ExtraDTO;
@@ -27,10 +30,13 @@ public class TravelAgentOrderService {
     private ExtraRepository extraRepository;
 
 
-    public List<OrderDTO> allOrders() {
-        return orderRepository.findAllByOrderByCreationDateDesc().stream()
+    public Page<OrderDTO> allOrders(Pageable pageable) {
+        Page<Order> orders = orderRepository.findAllByOrderByCreationDateDesc(pageable);
+
+        List<OrderDTO> curPageDTO = orders.getContent().stream()
                 .map(OrderDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
+        return new PageImpl<>(curPageDTO, pageable, orders.getTotalElements());
     }
 
     public List<ExtraDTO> allBonusesForCruise(Long orderId) throws NoEntityFoundException {

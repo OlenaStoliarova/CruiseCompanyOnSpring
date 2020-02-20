@@ -1,12 +1,14 @@
 package ua.cruise.company.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.cruise.company.entity.Order;
-import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.TravelAgentOrderService;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +16,15 @@ import java.util.List;
 @Controller
 @RequestMapping("/travel_agent")
 public class TravelAgentOrdersController {
+    public static final int DEFAULT_PAGE_SIZE = 5;
+
     @Autowired
     private TravelAgentOrderService travelAgentOrderService;
 
     @GetMapping("/orders")
-    public String showAllOrdersList(Model model) {
-        model.addAttribute("orders", travelAgentOrderService.allOrders());
+    public String showAllOrdersList(Model model,
+                                    @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
+        model.addAttribute("orders", travelAgentOrderService.allOrders(pageable.previousOrFirst()));
         return "/travel_agent/orders";
     }
 
