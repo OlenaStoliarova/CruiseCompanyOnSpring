@@ -9,22 +9,66 @@
     <div class="row">
         <div class="col-12">
             <h3 class="text-danger" th:if="${no_excursion_found}" th:utext="#{ui.error.excursion.not.found}"></h3>
-            <div class="card">
+
+            <div class="card" th:if="${no_excursion_found == null}" >
                 <div class="card-header">
                     <h3 class="card-title" th:utext="#{ui.excursion.edit.invitation}"></h3>
                 </div><br/>
                 <div class="card-body">
                     <form th:action="@{/travel_agent/edit_excursion}" th:object="${excursion}" method="post">
-                        <input type="hidden" name="id" th:value="${excursion.id}">
+                        <input type="hidden" name="excursionId" th:value="${param.excursionId}">
 
                         <div th:replace="travel_agent/excursion_form_fragments::name_plus_descr"></div>
-                        <div th:replace="travel_agent/excursion_form_fragments::duration_price_port"></div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group row">
+                                    <label th:for="approximateDurationHr" th:utext="#{ui.excursion.duration}"
+                                           class="col-4 col-form-label"></label>
+                                    <div class="col-8">
+                                        <input class="form-control" th:field="*{approximateDurationHr}" th:required="required"
+                                               pattern="\d{1,2}" th:title="#{regex.number.upto2digit.tip}"
+                                               th:value="${excursion.approximateDurationHr}">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label th:for="priceUSD" th:utext="#{ui.excursion.price.usd}"
+                                           class="col-4 col-form-label"></label>
+                                    <div class="col-8">
+                                        <input class="form-control" th:field="*{priceUSD}" th:required="required"
+                                               th:pattern="#{regex.price}" th:title="#{regex.price.tip}"
+                                               th:value="${excursion.priceUSD}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="seaportId" th:utext="#{ui.excursion.port}"
+                                           class="col-4 col-form-label"></label>
+                                    <div class="col-8">
+                                        <select class="form-control" id="seaportId" name="seaportId" required>
+                                            <option hidden disabled selected value>-</option>
+                                            <option th:if="#{localization.lang}==UKR"
+                                                    th:each="seaport : ${all_seaports}"
+                                                    th:value="${seaport.id}" th:text="${seaport.nameUkr}"
+                                                    th:selected="${seaport.id}==${excursion?.seaportId}"></option>
+                                            <option th:unless="#{localization.lang}==UKR"
+                                                    th:each="seaport : ${all_seaports}"
+                                                    th:value="${seaport.id}" th:text="${seaport.nameEn}"
+                                                    th:selected="${seaport.id}==${excursion?.seaportId}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="row">
                             <div class="col text-right">
-                                <h6 class="text-danger" th:if="${param.error}" th:utext="#{ui.error.not.saved}"></h6>
-                                <h6 class="text-danger" th:if="${param.no_port_found}" th:utext="#{ui.error.not.saved}"></h6>
-                                <h6 class="text-danger" th:if="${param.no_port_found}" th:utext="#{ui.error.excursion.port.not.fond}"></h6>
+                                <h6 class="text-danger" th:if="${validation_errors}" th:text="#{ui.error.form.validation}"></h6>
+                                <h6 class="text-danger" th:if="${non_unique}" th:utext="#{ui.excursion.add.error}"></h6>
+                                <h6 class="text-danger" th:if="${error}" th:utext="#{ui.error.unexpected.on.saving}"></h6>
+                                <h6 class="text-danger" th:if="${no_port_found}" th:utext="#{ui.error.not.saved}"></h6>
+                                <h6 class="text-danger" th:if="${no_port_found}" th:utext="#{ui.error.excursion.port.not.fond}"></h6>
                                 <a class="btn btn-secondary" href="/travel_agent/excursions"><div th:text="#{ui.button.cancel}"></div></a>
                                 <input type="submit" class="btn btn-success" th:value="#{ui.button.save}" />
                             </div>
