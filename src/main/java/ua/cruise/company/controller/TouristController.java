@@ -103,7 +103,6 @@ public class TouristController {
         }
     }
 
-
     @PostMapping("/order/{orderId}/excursions")
     public String addExcursionToOrder(@PathVariable Long orderId,
                                       @RequestParam(value = "chosenExcursions", required = false) List<Long> chosenExcursions){
@@ -118,10 +117,8 @@ public class TouristController {
         }
     }
 
-    //http://localhost:8080/tourist/print_order/9
     @GetMapping ("/print_order/{orderId}")
-    @ResponseBody
     public String showPrintPromise(@PathVariable Long orderId){
-        return "TO DO: finish this";
+        return "/tourist/print_order";
     }
 }

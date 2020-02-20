@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head"></head>
+<body>
+<div th:replace="header::lang_choice"></div>
+<div th:replace="header::top_menu"></div>
+
+<div class="container">
+    <h5 th:utext="#{ui.print.ticket.message1}"></h5>
+    <h5 th:utext="#{ui.print.ticket.message2}"></h5>
+    <h5 th:utext="#{ui.print.ticket.message3}"></h5>
+    <br/>
+    <h1 class="text-center"  th:utext="#{ui.oder.bye}"></h1>
+</div>
+
+</body>
+</html>
