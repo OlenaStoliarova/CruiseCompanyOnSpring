@@ -37,35 +37,36 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public List<UserDTO> allUsers() {
+    public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream()
                 .map(UserDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public boolean saveUser(User user) throws NonUniqueObjectException {
+    public void create(User user) throws NonUniqueObjectException {
         if (user.getRole() == null)
             user.setRole(UserRole.ROLE_TOURIST);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
         try {
             userRepository.save(user);
         } catch (DataIntegrityViolationException exception) {
             LOGGER.error("User wasn't saved {}, {}", user, exception.getMessage());
             throw new NonUniqueObjectException("User with such email already exists");
         }
-
-        return true;
     }
 
     @Transactional
-    public boolean updateUserRole(String email, UserRole newRole) throws NoEntityFoundException {
-        User userFromDB = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoEntityFoundException("User with provided email was not found: " + email));
-
+    public void updateUserRole(String email, UserRole newRole) throws NoEntityFoundException {
+        User userFromDB = getUserByEmail(email);
         userFromDB.setRole(newRole);
         userRepository.save(userFromDB);
-        return true;
+    }
+
+    private User getUserByEmail(String email) throws NoEntityFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoEntityFoundException("User with provided email was not found: " + email));
     }
 
 }

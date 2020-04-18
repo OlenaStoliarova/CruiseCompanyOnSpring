@@ -22,12 +22,12 @@ public class AdminUsersController {
     private UserService userService;
 
     @GetMapping("/users")
-    public String userList(@AuthenticationPrincipal User user,
-                           @RequestParam(value = "error_updating_role", required = false) String error_updating_role,
-                           Model model) {
+    public String showAllUsers(@AuthenticationPrincipal User user,
+                               @RequestParam(value = "error_updating_role", required = false) String error_updating_role,
+                               Model model) {
         model.addAttribute("error_updating_role", error_updating_role != null);
         model.addAttribute("current_user", user.getEmail());
-        model.addAttribute("allUsers", userService.allUsers());
+        model.addAttribute("allUsers", userService.getAllUsers());
         model.addAttribute("roles", Arrays.asList(UserRole.values()));
         return "admin/users";
     }

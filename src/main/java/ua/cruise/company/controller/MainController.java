@@ -10,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import ua.cruise.company.controller.form.RegistrationForm;
 import ua.cruise.company.controller.form.mapper.RegistrationFormMapper;
 import ua.cruise.company.entity.User;
@@ -28,29 +27,25 @@ public class MainController {
     private UserService userService;
 
     @GetMapping(value = {"/"})
-    public String firstPage() {
+    public String showIndexPage() {
         return "index";
     }
 
-
     @GetMapping("/login")
-    public String getLogin(@RequestParam(value = "error", required = false) String error,
-                           @RequestParam(value = "logout", required = false) String logout,
-                           Model model) {
-        model.addAttribute("error", error != null);
-        model.addAttribute("logout", logout != null);
+    public String showLoginPage() {
         return "login";
     }
 
     @GetMapping("/registration")
-    public String showRegistartionForm(Model model) {
+    public String showRegistrationForm(Model model) {
         model.addAttribute("user", new RegistrationForm());
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String registerNewUser(@Valid @ModelAttribute("registration_form") RegistrationForm registrationForm,
-                                  BindingResult bindingResult, Model model) {
+    public String submitRegistrationForm(@Valid @ModelAttribute("registration_form") RegistrationForm registrationForm,
+                                         BindingResult bindingResult,
+                                         Model model) {
         if (bindingResult.hasErrors() ||
                 !registrationForm.getPassword().equals(registrationForm.getRepeatPassword())) {
 
@@ -63,7 +58,8 @@ public class MainController {
         User user = new RegistrationFormMapper().mapToEntity(registrationForm);
 
         try {
-            userService.saveUser(user);
+            userService.create(user);
+            return "redirect:/?registration_success=true";
         } catch (NonUniqueObjectException e) {
             model.addAttribute("non_unique", true);
             model.addAttribute("user", registrationForm);
@@ -74,13 +70,11 @@ public class MainController {
             model.addAttribute("user", registrationForm);
             return "registration";
         }
-
-        return "redirect:/?registration_success=true";
     }
 
 
     @GetMapping(value = {"/main"})
-    public String openMain(Authentication authentication) {
+    public String showMainPageForUserRole(Authentication authentication) {
         if (authentication.getAuthorities().contains(UserRole.ROLE_ADMIN))
             return "admin/admin_main";
         if (authentication.getAuthorities().contains(UserRole.ROLE_TRAVEL_AGENT))

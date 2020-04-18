@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ua.cruise.company.entity.Seaport;
 import ua.cruise.company.service.SeaportService;
+import ua.cruise.company.service.exception.NonUniqueObjectException;
+import ua.cruise.company.service.exception.SomethingWentWrongException;
 
 @Controller
 @RequestMapping("/admin")
@@ -17,21 +19,20 @@ public class AdminSeaportController {
     private SeaportService seaportService;
 
     @GetMapping("/seaports")
-    public String getAllPortsList(Model model) {
-        model.addAttribute("all_ports", seaportService.allPorts());
+    public String showAllPortsPage(Model model) {
+        model.addAttribute("all_ports", seaportService.getAllPorts());
         model.addAttribute("new_port", new Seaport());
         return "/admin/seaports";
     }
 
-    @PostMapping("/addPort")
-    public String addSeaport(@ModelAttribute Seaport seaport) {
+    @PostMapping("/seaports/add")
+    public String submitAddPortForm(@ModelAttribute Seaport seaport) {
+        try {
+            seaportService.create(seaport);
+            return "redirect:/admin/seaports";
 
-        boolean result = seaportService.savePort(seaport);
-
-        if (!result) {
+        } catch (NonUniqueObjectException | SomethingWentWrongException e) {
             return "redirect:/admin/seaports?error";
         }
-
-        return "redirect:/admin/seaports";
     }
 }
