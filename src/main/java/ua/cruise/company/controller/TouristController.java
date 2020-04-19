@@ -33,7 +33,7 @@ public class TouristController {
     @GetMapping("/cruises")
     public String getAllCruisesList(Model model,
                                     @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
-        Page<CruiseDTO> cruisesPage = cruiseService.allCruisesFromTodayPaginated(pageable.previousOrFirst());
+        Page<CruiseDTO> cruisesPage = cruiseService.getAllCruisesFromToday(pageable.previousOrFirst());
         model.addAttribute("cruises", cruisesPage);
         return "/tourist/cruises";
     }
