@@ -21,7 +21,7 @@
         </span>
     </div>
 
-    <div class="text-success" th:if="${#lists.isEmpty(all_excursions)}" th:utext="#{ui.excursion.all.empty.list}"></div>
+    <div class="text-success" th:if="${all_excursions.totalPages==0}" th:utext="#{ui.excursion.all.empty.list}"></div>
 
     <div class="table-responsive">
         <table class="table table-condensed table-bordered table-hover">
