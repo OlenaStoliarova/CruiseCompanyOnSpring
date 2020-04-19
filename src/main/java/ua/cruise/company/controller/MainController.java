@@ -46,32 +46,15 @@ public class MainController {
     public String submitRegistrationForm(@Valid @ModelAttribute("registration_form") RegistrationForm registrationForm,
                                          BindingResult bindingResult,
                                          Model model) {
-        if (bindingResult.hasErrors() ||
-                !registrationForm.getPassword().equals(registrationForm.getRepeatPassword())) {
 
-            model.addAttribute("validation_errors", true);
-            model.addAttribute("user", registrationForm);
-            return "registration";
+        if (hasNoValidationErrors(registrationForm, bindingResult, model)) {
+            if (registerNewUser(registrationForm, model))
+                return "redirect:/?registration_success=true";
         }
 
-        LOGGER.info("registerNewUser: " + registrationForm);
-        User user = new RegistrationFormMapper().mapToEntity(registrationForm);
-
-        try {
-            userService.create(user);
-            return "redirect:/?registration_success=true";
-        } catch (NonUniqueObjectException e) {
-            model.addAttribute("non_unique", true);
-            model.addAttribute("user", registrationForm);
-            return "registration";
-        } catch (Exception ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            model.addAttribute("registration_error", true);
-            model.addAttribute("user", registrationForm);
-            return "registration";
-        }
+        model.addAttribute("user", registrationForm);
+        return "registration";
     }
-
 
     @GetMapping(value = {"/main"})
     public String showMainPageForUserRole(Authentication authentication) {
@@ -83,4 +66,30 @@ public class MainController {
         return "tourist/tourist_main";
     }
 
+
+    private boolean hasNoValidationErrors(RegistrationForm registrationForm, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors() ||
+                !registrationForm.getPassword().equals(registrationForm.getRepeatPassword())) {
+            LOGGER.error("Validation error: " + bindingResult.getFieldErrors());
+            model.addAttribute("validation_errors", true);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean registerNewUser(RegistrationForm registrationForm, Model model) {
+        LOGGER.info("registering new User: " + registrationForm);
+        User user = new RegistrationFormMapper().mapToEntity(registrationForm);
+
+        try {
+            userService.create(user);
+            return true;
+        } catch (NonUniqueObjectException e) {
+            model.addAttribute("non_unique", true);
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            model.addAttribute("registration_error", true);
+        }
+        return false;
+    }
 }
