@@ -9,6 +9,7 @@ public class ExcursionFormMapper implements EntityFormMapper<Excursion, Excursio
     public ExcursionForm fillForm(Excursion entity) {
         ExcursionForm excursionForm = new ExcursionForm();
 
+        excursionForm.setId( entity.getId());
         excursionForm.setNameEn( entity.getNameEn());
         excursionForm.setNameUkr( entity.getNameUkr());
         excursionForm.setDescriptionEn( entity.getDescriptionEn());
@@ -23,6 +24,7 @@ public class ExcursionFormMapper implements EntityFormMapper<Excursion, Excursio
     @Override
     public Excursion mapToEntity(ExcursionForm form) {
         return Excursion.builder()
+                .id(form.getId())
                 .nameEn(form.getNameEn())
                 .nameUkr(form.getNameUkr())
                 .descriptionEn(form.getDescriptionEn())

@@ -17,11 +17,11 @@
             </form>
         </span>
         <span class="col-6 text-right">
-            <a class="btn btn-success btn-lg" href="/travel_agent/add_excursion"><div th:text="#{ui.button.add}"></div></a>
+            <a class="btn btn-success btn-lg" href="/travel_agent/excursions/add"><div th:text="#{ui.button.add}"></div></a>
         </span>
     </div>
 
-    <div class="text-success" th:if="${#lists.isEmpty(all_excursions)}" th:utext="#{ui.excursion.all.empty.list}"></div>
+    <div class="text-success" th:if="${all_excursions.totalPages==0}" th:utext="#{ui.excursion.all.empty.list}"></div>
 
     <div class="table-responsive">
         <table class="table table-condensed table-bordered table-hover">
@@ -50,12 +50,10 @@
                 <td th:if="#{localization.lang}==UKR" th:text="${excursion.seaport.nameUkr + '-' + excursion.seaport.countryUkr}"></td>
                 <td th:unless="#{localization.lang}==UKR" th:text="${excursion.seaport.nameEn + '-' + excursion.seaport.countryEn}"></td>
                 <td>
-                    <form class="form-inline" th:action="@{/travel_agent/edit_excursion}" method="get">
-                        <input type="hidden" name="excursionId" th:value="${excursion.id}"/>
+                    <form class="form-inline" th:action="@{/travel_agent/excursions/{id}/edit(id=${excursion.id})}" method="get">
                         <input type="submit" class="btn btn-light" th:value="#{ui.button.edit}" />
                     </form>
-                    <form class="form-inline" th:action="@{/travel_agent/delete_excursion}" method="post">
-                        <input type="hidden" name="excursionId" th:value="${excursion.id}"/>
+                    <form class="form-inline" th:action="@{/travel_agent/excursions/{id}/delete(id=${excursion.id})}" method="post">
                         <input type="submit" class="btn btn-light" th:value="#{ui.button.delete}" />
                     </form>
                 </td>

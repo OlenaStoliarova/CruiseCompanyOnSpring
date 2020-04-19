@@ -13,7 +13,7 @@
                     <h3 class="card-title" th:utext="#{ui.excursion.add.invitation}"></h3>
                 </div><br/>
                 <div class="card-body">
-                    <form th:action="@{/travel_agent/add_excursion}" th:object="${excursion}" method="post">
+                    <form th:action="@{/travel_agent/excursions/add}" th:object="${excursion}" method="post">
 
                         <div th:replace="travel_agent/excursion_form_fragments::name_plus_descr"></div>
                         <div class="row">

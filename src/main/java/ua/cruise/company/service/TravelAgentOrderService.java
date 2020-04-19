@@ -30,7 +30,7 @@ public class TravelAgentOrderService {
     private ExtraRepository extraRepository;
 
 
-    public Page<OrderDTO> allOrders(Pageable pageable) {
+    public Page<OrderDTO> getAllOrders(Pageable pageable) {
         Page<Order> orders = orderRepository.findAllByOrderByCreationDateDesc(pageable);
 
         List<OrderDTO> curPageDTO = orders.getContent().stream()
@@ -39,8 +39,9 @@ public class TravelAgentOrderService {
         return new PageImpl<>(curPageDTO, pageable, orders.getTotalElements());
     }
 
-    public List<ExtraDTO> allBonusesForCruise(Long orderId) throws NoEntityFoundException {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
+
+    public List<ExtraDTO> getAllBonusesAvailableForOrder(Long orderId) throws NoEntityFoundException {
+        Order order = getOrderById(orderId);
         return order.getCruise().getShip().getExtras().stream()
                 .map(ExtraDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
@@ -48,12 +49,18 @@ public class TravelAgentOrderService {
 
     @Transactional
     public void addBonusesToOrder(Long orderId, List<Long> bonusesIds) throws NoEntityFoundException {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
-        if( ! bonusesIds.isEmpty()){
-            Set<Extra> extras = new HashSet<>( extraRepository.findAllById(bonusesIds));
+        Order order = getOrderById(orderId);
+        if (!bonusesIds.isEmpty()) {
+            Set<Extra> extras = new HashSet<>(extraRepository.findAllById(bonusesIds));
             order.setFreeExtras(extras);
         }
         order.setStatus(OrderStatus.EXTRAS_ADDED);
         orderRepository.save(order);
+    }
+
+
+    private Order getOrderById(Long orderId) throws NoEntityFoundException {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
     }
 }

@@ -7,6 +7,8 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public class ExcursionForm {
+    private Long id;
+
     @Pattern(regexp = "^[a-zA-Z]+([ ]?['-:,&.]?[ ]?[a-zA-Z]+)*$",
             message="Validation failed for name in English. Only latin letters and delimiter characters are allowed")
     private String nameEn;
@@ -31,6 +33,14 @@ public class ExcursionForm {
     private Long seaportId;
 
     public ExcursionForm() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNameEn() {
@@ -92,7 +102,8 @@ public class ExcursionForm {
     @Override
     public String toString() {
         return "ExcursionForm{" +
-                "nameEn='" + nameEn + '\'' +
+                "id=" + id +
+                ", nameEn='" + nameEn + '\'' +
                 ", nameUkr='" + nameUkr + '\'' +
                 ", descriptionEn='" + descriptionEn + '\'' +
                 ", descriptionUkr='" + descriptionUkr + '\'' +

@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class TouristOrderService {
     @Autowired
     private ExcursionRepository excursionRepository;
 
-    public Page<OrderDTO> allOrdersOfUser(Long userId, Pageable pageable) {
+    public Page<OrderDTO> getAllOrdersOfUser(Long userId, Pageable pageable) {
         Page<Order> orders =  orderRepository.findByUser_IdOrderByCreationDateDesc(userId, pageable);
         List<OrderDTO> curPageDTO = orders.getContent().stream()
                 .map(OrderDTOConverter::convertToDTO)
@@ -42,59 +41,49 @@ public class TouristOrderService {
     }
 
     @Transactional
-    public void bookCruise(User tourist, Long cruiseId, int quantity){
-        Optional<Cruise> cruiseFromDB = cruiseRepository.findById(cruiseId);
+    public void bookCruise(User tourist, Long cruiseId, int quantity) throws NoEntityFoundException {
+        Cruise cruise = cruiseRepository.findById(cruiseId)
+                .orElseThrow(() -> new NoEntityFoundException("There is no cruise with provided id (" + cruiseId + ")"));
+        cruise.setVacancies(cruise.getVacancies() - quantity);
 
-        if( cruiseFromDB.isPresent()) {
-            Cruise cruise = cruiseFromDB.get();
-            cruise.setVacancies(cruise.getVacancies() - quantity);
+        Order order = Order.builder()
+                .creationDate(LocalDate.now())
+                .user(tourist)
+                .cruise(cruise)
+                .quantity(quantity)
+                .totalPrice(cruise.getPrice().multiply(BigDecimal.valueOf(quantity)))
+                .status(OrderStatus.NEW)
+                .build();
 
-            Order order = Order.builder()
-                    .creationDate(LocalDate.now())
-                    .user(tourist)
-                    .cruise(cruise)
-                    .quantity(quantity)
-                    .totalPrice(cruise.getPrice().multiply(BigDecimal.valueOf(quantity)))
-                    .status(OrderStatus.NEW)
-                    .build();
-
-            cruiseRepository.save(cruise);
-            orderRepository.save(order);
-        }
+        cruiseRepository.save(cruise);
+        orderRepository.save(order);
     }
 
     @Transactional
-    public void cancelBooking(Long orderId) {
-        Optional<Order> orderFromDB = orderRepository.findById(orderId);
+    public void cancelBooking(Long orderId) throws NoEntityFoundException {
+        Order order = getOrderById(orderId);
+        order.setStatus(OrderStatus.CANCELED);
 
-        if (orderFromDB.isPresent()) {
-            Order order = orderFromDB.get();
-            order.setStatus(OrderStatus.CANCELED);
+        Cruise cruise = order.getCruise();
+        cruise.setVacancies(cruise.getVacancies() + order.getQuantity());
 
-            Cruise cruise = order.getCruise();
-            cruise.setVacancies(cruise.getVacancies() + order.getQuantity());
-
-            cruiseRepository.save(cruise);
-            orderRepository.save(order);
-        }
+        cruiseRepository.save(cruise);
+        orderRepository.save(order);
     }
 
     @Transactional
-    public void payOrder(Long orderId){
-        Optional<Order> orderFromDB = orderRepository.findById(orderId);
-
-        if (orderFromDB.isPresent()) {
-            Order order = orderFromDB.get();
-            order.setStatus(OrderStatus.PAID);
-            orderRepository.save(order);
-        }
+    public void payOrder(Long orderId) throws NoEntityFoundException {
+        Order order = getOrderById(orderId);
+        order.setStatus(OrderStatus.PAID);
+        orderRepository.save(order);
     }
 
-    public List<ExcursionDTO> allExcursionsForCruise(Long orderId) throws NoEntityFoundException {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
+    public List<ExcursionDTO> getAllExcursionsAvailableForOrder(Long orderId) throws NoEntityFoundException {
+        Order order = getOrderById(orderId);
         List<Long> portIds = order.getCruise().getShip().getVisitingPorts().stream()
                 .map(Seaport::getId)
                 .collect(Collectors.toList());
+
         List<Excursion> excursions = excursionRepository.findBySeaport_IdIn(portIds);
         return excursions.stream()
                 .map(ExcursionDTOConverter::convertToDTO)
@@ -103,13 +92,18 @@ public class TouristOrderService {
 
     @Transactional
     public void addExcursionsToOrder(Long orderId, List<Long> excursionsIds) throws NoEntityFoundException {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
+        Order order = getOrderById(orderId);
         if( ! excursionsIds.isEmpty()){
             Set<Excursion> excursionsSet = new HashSet<>(excursionRepository.findByIdIn(excursionsIds));
             order.setExcursions(excursionsSet);
         }
         order.setStatus(OrderStatus.EXCURSIONS_ADDED);
         orderRepository.save(order);
+    }
+
+    private Order getOrderById(Long orderId) throws NoEntityFoundException {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
     }
 
 }

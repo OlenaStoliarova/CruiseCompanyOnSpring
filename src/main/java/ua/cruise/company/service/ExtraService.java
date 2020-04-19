@@ -8,17 +8,21 @@ import org.springframework.stereotype.Service;
 import ua.cruise.company.entity.Extra;
 import ua.cruise.company.repository.ExtraRepository;
 import ua.cruise.company.service.exception.NoEntityFoundException;
+import ua.cruise.company.service.exception.NonUniqueObjectException;
+import ua.cruise.company.service.exception.SomethingWentWrongException;
 
 import java.util.List;
 
 @Service
 public class ExtraService {
-    private static final Logger LOGGER= LoggerFactory.getLogger(ExtraService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExtraService.class);
 
     @Autowired
     private ExtraRepository extraRepository;
 
-    public List<Extra> allExtras() { return extraRepository.findAllByOrderByNameEn();}
+    public List<Extra> getAllExtras() {
+        return extraRepository.findAllByOrderByNameEn();
+    }
 
     public Extra findExtraById(Long id) throws NoEntityFoundException {
         return extraRepository.findById(id)
@@ -30,15 +34,18 @@ public class ExtraService {
                 .orElseThrow(() -> new NoEntityFoundException("There is no extra with provided name (" + name + ")"));
     }
 
-    public boolean saveExtra(Extra extra) {
-        try{
-            extraRepository.save(extra);
-        }catch (
-                DataIntegrityViolationException exception){
-            LOGGER.error("Ship's extra wasn't saved {}, {}", extra, exception.getMessage());
-            return false;
-        }
-        return true;
-    }
+    public void create(Extra extra) throws NonUniqueObjectException, SomethingWentWrongException {
+        try {
+            extra = extraRepository.save(extra);
 
+            if (extra.getId() == null)
+                throw new SomethingWentWrongException("Extra wasn't saved");
+        } catch (DataIntegrityViolationException exception) {
+            LOGGER.error("Ship's extra wasn't saved {}, {}", extra, exception.getMessage());
+            throw new NonUniqueObjectException("Extra with such name already exists.");
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new SomethingWentWrongException(ex.getMessage(), ex);
+        }
+    }
 }

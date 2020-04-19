@@ -44,7 +44,7 @@
                     <span th:if="${order.status =='CANCELED'}" th:utext="#{ui.order.canceled}"></span>
                     <span th:text="${order.freeExtras}"></span>
                     <a th:if="${order.status =='EXCURSIONS_ADDED'}" class="btn btn-success"
-                       th:text="#{ui.button.add}" th:href="@{/travel_agent/order/{id}/add_bonuses(id=${order.id})}"></a>
+                       th:text="#{ui.button.add}" th:href="@{/travel_agent/orders/{id}/bonuses(id=${order.id})}"></a>
                 </td>
             </tr>
             </tbody>
