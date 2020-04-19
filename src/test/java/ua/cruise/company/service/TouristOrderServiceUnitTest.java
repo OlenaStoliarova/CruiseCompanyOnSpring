@@ -12,6 +12,7 @@ import ua.cruise.company.entity.User;
 import ua.cruise.company.repository.CruiseRepository;
 import ua.cruise.company.repository.ExcursionRepository;
 import ua.cruise.company.repository.OrderRepository;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class TouristOrderServiceUnitTest {
 
 
     @Test
-    public void shouldDecreaseCruiseVacanciesWhenOrderCreated(){
+    public void shouldDecreaseCruiseVacanciesWhenOrderCreated() throws NoEntityFoundException {
         int testArraySize = 5;
         int[] initialVacancies = {10, 0, 2, 450, 200};
         int[] takenByOrder =    {2, 1, 10, 300, 200};
@@ -58,7 +59,7 @@ public class TouristOrderServiceUnitTest {
     }
 
     @Test
-    public void shouldIncreaseCruiseVacanciesWhenOrderCanceled(){
+    public void shouldIncreaseCruiseVacanciesWhenOrderCanceled() throws NoEntityFoundException {
         int testArraySize = 5;
         int[] initialVacancies = {10, 0, 2, 150, 0};
         int[] takenByOrder =    {2, 1, 10, 300, 200};

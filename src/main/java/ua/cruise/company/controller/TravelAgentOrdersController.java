@@ -24,15 +24,15 @@ public class TravelAgentOrdersController {
     @GetMapping("/orders")
     public String showAllOrdersList(Model model,
                                     @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
-        model.addAttribute("orders", travelAgentOrderService.allOrders(pageable.previousOrFirst()));
+        model.addAttribute("orders", travelAgentOrderService.getAllOrders(pageable.previousOrFirst()));
         return "/travel_agent/orders";
     }
 
 
-    @GetMapping("/order/{order}/add_bonuses")
-    public String showExcursionsForOrder(@PathVariable Order order, Model model) {
+    @GetMapping("/orders/{order}/bonuses")
+    public String showExtrasAvailableForOrder(@PathVariable Order order, Model model) {
         try {
-            model.addAttribute("bonuses", travelAgentOrderService.allBonusesForCruise(order.getId()));
+            model.addAttribute("bonuses", travelAgentOrderService.getAllBonusesAvailableForOrder(order.getId()));
             model.addAttribute("orderId", order.getId());
             model.addAttribute("totalPrice", order.getTotalPrice());
             return "/travel_agent/cruise_bonuses";
@@ -41,10 +41,9 @@ public class TravelAgentOrdersController {
         }
     }
 
-    @PostMapping("/order/{orderId}/add_bonuses")
-    public String addExcursionToOrder(@PathVariable Long orderId,
-                                      @RequestParam(value = "chosenBonuses", required = false) List<Long> chosenBonuses) {
-
+    @PostMapping("/orders/{orderId}/bonuses")
+    public String submitExtrasAddedToOrder(@PathVariable Long orderId,
+                                           @RequestParam(value = "chosenBonuses", required = false) List<Long> chosenBonuses) {
         try {
             if (chosenBonuses == null)
                 chosenBonuses = new ArrayList<>();

@@ -34,7 +34,7 @@
                     <span th:if="${order.status  =='NEW'}" th:utext="#{ui.order.excursions.promise}"></span>
                     <span th:if="${order.status  =='CANCELED'}" th:utext="#{ui.order.canceled}"></span>
                     <span th:if="${order.status  =='PAID'}">
-                        <a class="btn btn-success" th:text="#{ui.button.add}" th:href="@{/tourist/order/{id}/excursions(id=${order.id})}"></a>
+                        <a class="btn btn-success" th:text="#{ui.button.add}" th:href="@{/tourist/orders/{id}/excursions(id=${order.id})}"></a>
                     </span>
                     <span th:text="${order.addedExcursions}"></span>
                 </td>
@@ -48,11 +48,11 @@
                 <td th:insert="common_fragments::order_status_nice"></td>
                 <td>
                     <span th:if="${order.status  =='NEW'}">
-                        <a class="btn btn-success" th:text="#{ui.button.pay}" th:href="@{/tourist/pay_order/{id}(id=${order.id})}"></a>
-                        <a class="btn btn-secondary" th:text="#{ui.button.cancel}" th:href="@{/tourist/cancel_order/{id}(id=${order.id})}"></a>
+                        <a class="btn btn-success" th:text="#{ui.button.pay}" th:href="@{/tourist/orders/{id}/pay(id=${order.id})}"></a>
+                        <a class="btn btn-secondary" th:text="#{ui.button.cancel}" th:href="@{/tourist/orders/{id}/cancel(id=${order.id})}"></a>
                     </span>
                     <a th:if="${order.status  =='EXTRAS_ADDED'}" class="btn btn-success" th:text="#{ui.button.print}"
-                       th:href="@{/tourist/print_order/{id}(id=${order.id})}"></a>
+                       th:href="@{/tourist/orders/{id}/print(id=${order.id})}"></a>
                 </td>
             </tr>
             </tbody>

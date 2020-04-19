@@ -17,7 +17,7 @@
 
     <h6 class="text-danger" th:if="${param.error}" th:utext="#{ui.cruise.order.error}"></h6>
 
-    <form class="form-inline" th:action="@{/tourist/order/cruise/{id}(id=${cruise.id})}" method="post">
+    <form class="form-inline" th:action="@{/tourist/cruises/{id}/order(id=${cruise.id})}" method="post">
         <input type="hidden" name="id" th:value="${cruise.id}">
 
         <div class="form-group mr-3">

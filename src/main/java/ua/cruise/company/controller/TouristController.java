@@ -31,93 +31,93 @@ public class TouristController {
     private CruiseService cruiseService;
 
     @GetMapping("/cruises")
-    public String getAllCruisesList(Model model,
-                                    @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
+    public String showAllCruisesList(Model model,
+                                     @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
         Page<CruiseDTO> cruisesPage = cruiseService.getAllCruisesFromToday(pageable.previousOrFirst());
         model.addAttribute("cruises", cruisesPage);
         return "/tourist/cruises";
     }
 
-    @GetMapping("/order/cruise/{cruise}")
-    public String showCruiseOrderForm(@PathVariable Cruise cruise, Model model) {
+    @GetMapping("/cruises/{cruise}/order")
+    public String showOrderCruiseForm(@PathVariable Cruise cruise, Model model) {
         model.addAttribute("cruise", CruiseDTOConverter.convertToDTO(cruise));
         return "/tourist/order_cruise";
     }
 
-    @PostMapping("/order/cruise/{cruiseId}")
-    public String showCruiseOrderForm(@AuthenticationPrincipal User user,
-                                      @PathVariable Long cruiseId,
-                                      @RequestParam int quantity,
-                                      Model model) {
+    @PostMapping("/cruises/{cruiseId}/order")
+    public String submitOrderCruiseForm(@AuthenticationPrincipal User user,
+                                        @PathVariable Long cruiseId,
+                                        @RequestParam int quantity,
+                                        Model model) {
         try {
             touristOrderService.bookCruise(user, cruiseId, quantity);
-            return "redirect:/tourist/my_orders";
+            return "redirect:/tourist/orders";
         } catch (TransactionSystemException transactionEx) {
-            return "redirect:/tourist/order/cruise/" + cruiseId + "?error";
+            return "redirect:/tourist/cruises/" + cruiseId + "/order?error";
         } catch (Exception ex) {
-            return "redirect:/tourist/order/cruise/" + cruiseId + "?exception=" + ex.getClass();
+            return "redirect:/tourist/cruises/" + cruiseId + "/order?exception=" + ex.getClass();
         }
     }
 
-    @GetMapping("/my_orders")
-    public String getUserOrders(@AuthenticationPrincipal User user,
-                                Model model,
-                                @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
-        model.addAttribute("orders", touristOrderService.allOrdersOfUser(user.getId(), pageable.previousOrFirst()));
+    @GetMapping("/orders")
+    public String showUserOrders(@AuthenticationPrincipal User user,
+                                 Model model,
+                                 @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
+        model.addAttribute("orders", touristOrderService.getAllOrdersOfUser(user.getId(), pageable.previousOrFirst()));
         return "/tourist/my_orders";
     }
 
-    @GetMapping("/cancel_order/{orderId}")
-    public String cancelOrder(@PathVariable Long orderId) {
+    @GetMapping("/orders/{orderId}/cancel")
+    public String submitOrderCancelation(@PathVariable Long orderId) {
         try {
             touristOrderService.cancelBooking(orderId);
-            return "redirect:/tourist/my_orders";
+            return "redirect:/tourist/orders";
         } catch (TransactionSystemException transactionEx) {
-            return "redirect:/tourist/my_orders?error";
+            return "redirect:/tourist/orders?error";
         } catch (Exception ex) {
-            return "redirect:/tourist/my_orders?exception=" + ex.getClass();
+            return "redirect:/tourist/orders?exception=" + ex.getClass();
         }
     }
 
-    @GetMapping("/pay_order/{orderId}")
-    public String payOrder(@PathVariable Long orderId) {
+    @GetMapping("/orders/{orderId}/pay")
+    public String submitOrderPayment(@PathVariable Long orderId) {
         try {
             touristOrderService.payOrder(orderId);
-            return "redirect:/tourist/my_orders";
+            return "redirect:/tourist/orders";
         } catch (TransactionSystemException transactionEx) {
-            return "redirect:/tourist/my_orders?error";
+            return "redirect:/tourist/orders?error";
         } catch (Exception ex) {
-            return "redirect:/tourist/my_orders?exception=" + ex.getClass();
+            return "redirect:/tourist/orders?exception=" + ex.getClass();
         }
     }
 
 
-    @GetMapping("/order/{orderId}/excursions")
+    @GetMapping("/orders/{orderId}/excursions")
     public String showExcursionsForOrder(@PathVariable Long orderId, Model model) {
         try {
-            model.addAttribute("excursions", touristOrderService.allExcursionsForCruise(orderId));
+            model.addAttribute("excursions", touristOrderService.getAllExcursionsAvailableForOrder(orderId));
             model.addAttribute("orderId", orderId);
             return "/tourist/cruise_excursions";
         } catch (NoEntityFoundException ex) {
-            return "redirect:/tourist/my_orders?error";
+            return "redirect:/tourist/orders?error";
         }
     }
 
-    @PostMapping("/order/{orderId}/excursions")
-    public String addExcursionToOrder(@PathVariable Long orderId,
-                                      @RequestParam(value = "chosenExcursions", required = false) List<Long> chosenExcursions) {
+    @PostMapping("/orders/{orderId}/excursions")
+    public String submitExcursionsToAddToOrder(@PathVariable Long orderId,
+                                               @RequestParam(value = "chosenExcursions", required = false) List<Long> chosenExcursions) {
 
         try {
             if (chosenExcursions == null)
                 chosenExcursions = new ArrayList<>();
             touristOrderService.addExcursionsToOrder(orderId, chosenExcursions);
-            return "redirect:/tourist/my_orders";
+            return "redirect:/tourist/orders";
         } catch (NoEntityFoundException ex) {
-            return "redirect:/tourist/my_orders?error";
+            return "redirect:/tourist/orders?error";
         }
     }
 
-    @GetMapping("/print_order/{orderId}")
+    @GetMapping("/orders/{orderId}/print")
     public String showPrintPromise(@PathVariable Long orderId) {
         return "/tourist/print_order";
     }
