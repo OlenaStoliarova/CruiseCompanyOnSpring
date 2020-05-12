@@ -8,13 +8,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ua.cruise.company.entity.Cruise;
 import ua.cruise.company.entity.Order;
-import ua.cruise.company.entity.User;
 import ua.cruise.company.repository.CruiseRepository;
-import ua.cruise.company.repository.ExcursionRepository;
 import ua.cruise.company.repository.OrderRepository;
 import ua.cruise.company.service.exception.NoEntityFoundException;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,32 +28,6 @@ public class TouristOrderServiceUnitTest {
     private OrderRepository orderRepository;
     @Mock
     private CruiseRepository cruiseRepository;
-    @Mock
-    private ExcursionRepository excursionRepository;
-
-
-    @Test
-    public void shouldDecreaseCruiseVacanciesWhenOrderCreated() throws NoEntityFoundException {
-        int testArraySize = 5;
-        int[] initialVacancies = {10, 0, 2, 450, 200};
-        int[] takenByOrder =    {2, 1, 10, 300, 200};
-        int[] expected =        {8, -1, -8, 150, 0};
-
-        for(int i=0; i < testArraySize; i++) {
-            Cruise cruise = new Cruise();
-            cruise.setPrice(BigDecimal.valueOf(1));
-            cruise.setVacancies(initialVacancies[i]);
-            when(cruiseRepository.findById(ID)).thenReturn(Optional.of(cruise));
-            instance.bookCruise(new User(), ID, takenByOrder[i]);
-        }
-
-        ArgumentCaptor<Cruise> argument = ArgumentCaptor.forClass(Cruise.class);
-        verify(cruiseRepository, times(testArraySize)).save(argument.capture());
-
-        for(int i=0; i < testArraySize; i++) {
-            assertThat(argument.getAllValues().get(i).getVacancies()).isEqualTo(expected[i]);
-        }
-    }
 
     @Test
     public void shouldIncreaseCruiseVacanciesWhenOrderCanceled() throws NoEntityFoundException {
